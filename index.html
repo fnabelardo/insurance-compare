@@ -130,6 +130,71 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   .plus{width:34px;height:34px;font-size:20px}
   footer{padding:0 9px 20px;font-size:.7rem}
 }
+/* ---------- Mi situación ---------- */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px}
+.panel>summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:1.05rem;list-style:none;display:flex;justify-content:space-between;gap:8px}
+.panel>summary::-webkit-details-marker{display:none}
+.panel>summary::after{content:'▾';color:var(--muted)}
+.panel:not([open])>summary::after{content:'▸'}
+.pbody{padding:0 16px 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.pbody>*,#presults>*,.notes>*{min-width:0}
+.panel{min-width:0;max-width:100%}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:max-content}
+.seg button{border:0;background:var(--surface);color:var(--text);padding:7px 14px}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted)}
+.field input,.field select{font:inherit;font-size:.92rem;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 8px;min-width:0}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field.check{flex-direction:row;align-items:center;gap:8px;grid-column:1/-1;color:var(--text)}
+.prices>summary{cursor:pointer;color:var(--muted);font-size:.85rem;margin-bottom:8px}
+.status{font-size:.95rem}
+.status b{color:var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface-2)}
+.kpi.best{border-color:var(--best-ink);background:var(--best-bg)}
+.kpi .t{font-size:.8rem;color:var(--muted);line-height:1.25}
+.kpi .v{font-size:1.35rem;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi.best .v{color:var(--best-ink)}
+.kpi .s{font-size:.76rem;color:var(--muted)}
+.strategy{border-left:4px solid var(--accent);background:var(--surface-2);padding:10px 12px;border-radius:6px;font-size:.92rem}
+.strategy h3{margin:0 0 6px;font-size:.95rem}
+.strategy ol{margin:4px 0;padding-left:20px}
+.tl{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+.tl table{border-collapse:collapse;width:100%;font-size:.82rem}
+.tl th,.tl td{border-bottom:1px solid var(--border);padding:6px 8px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tl th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:.75rem}
+.tl th:first-child,.tl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+.tl th:first-child{background:var(--surface-2)}
+.tl td.best{background:var(--best-bg);color:var(--best-ink);font-weight:600}
+.tl tr.birth td{font-weight:700}
+.tl tr.total td{font-weight:700;border-top:2px solid var(--border)}
+.bar{display:inline-block;height:8px;background:var(--accent);border-radius:4px;vertical-align:middle;opacity:.75}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.box{border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:.86rem}
+.box h3{margin:0 0 6px;font-size:.92rem}
+.box ol,.box ul{margin:0;padding-left:18px}
+.box li{margin:4px 0}
+.box.warn{border-color:#c99700;background:color-mix(in srgb,#d9a400 12%,var(--surface))}
+.muted{color:var(--muted);font-size:.8rem}
+.star{color:var(--accent);margin-right:2px}
+tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
+@media (max-width:640px){
+  .panel>summary{padding:10px 10px;font-size:.92rem}
+  .pbody{padding:0 10px 12px;gap:10px}
+  .fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .field{font-size:.72rem}
+  .field input,.field select{font-size:.82rem;padding:5px 6px}
+  .seg button{padding:6px 10px;font-size:.82rem}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .kpi{padding:8px}
+  .kpi .v{font-size:1.05rem}
+  .tl table{font-size:.72rem}
+  .tl th,.tl td{padding:5px 5px}
+  .box{font-size:.78rem;padding:8px 10px}
+  .strategy{font-size:.8rem}
+}
 @media print{
   .toolbar,.legend,th.addhead,td.addcol,.planhead .actions,footer,.menu{display:none!important}
   body{background:#fff;color:#000}
@@ -162,6 +227,13 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <span>Los datos se guardan automáticamente en este navegador.</span>
 </div>
 <main>
+  <details class="panel" id="profile" open>
+    <summary>🎯 Mi situación: ¿cuál plan me conviene?</summary>
+    <div class="pbody">
+      <div id="pform"></div>
+      <div id="presults"></div>
+    </div>
+  </details>
   <div class="wrap"><table id="grid"></table></div>
 </main>
 <footer>Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code> o <code>30%</code>. "Full price" / "Precio completo" cuenta como el peor valor.</footer>
@@ -176,6 +248,7 @@ const SECTIONS = [
     { key:'deductible', label:'Deducible', hint:'Deductible', cmp:'low' },
     { key:'drugDed',    label:'Deducible de medicinas', hint:'Drug deductible', cmp:'low' },
     { key:'oop',        label:'Máximo de bolsillo', hint:'Out-of-pocket max', cmp:'low' },
+    { key:'coins',      label:'Coaseguro', hint:'Coinsurance: % que pagas después del deducible', cmp:'low' },
     { key:'_annual',    label:'Prima anual', hint:'Pago mensual × 12', calc:'annual' },
     { key:'_worst',     label:'Peor caso anual', hint:'Prima anual + Out-of-pocket', calc:'worst' },
   ]},
@@ -197,6 +270,7 @@ const SECTIONS = [
   ]},
   { title: 'Laboratorios e imágenes', rows: [
     { key:'xray',    label:'Rayos X', hint:'X-rays', cmp:'low' },
+    { key:'ultrasound', label:'Ultrasonido', hint:'Si está vacío se usa Rayos X', cmp:'low' },
     { key:'imaging', label:'Imágenes (CT/PET/MRI)', hint:'Imaging', cmp:'low' },
     { key:'blood',   label:'Análisis de sangre', hint:'Blood work', cmp:'low' },
   ]},
@@ -215,8 +289,10 @@ const SECTIONS = [
     { key:'mhHosp', label:'Hospitalización psiquiátrica', hint:'Psychiatric hospital stay', cmp:'low' },
   ]},
   { title: 'Embarazo y parto', rows: [
-    { key:'wellBaby', label:'Cuidado del bebé sano', hint:'Well baby care', cmp:'low' },
-    { key:'delivery', label:'Parto y hospitalización', hint:'Labor, delivery, hospital stay', cmp:'low' },
+    { key:'prenatal',    label:'Consultas prenatales y postparto', hint:'If you are pregnant – Office visits', cmp:'low' },
+    { key:'deliveryPro', label:'Parto – médico', hint:'Childbirth/delivery professional services', cmp:'low' },
+    { key:'delivery',    label:'Parto – hospital', hint:'Childbirth/delivery facility services', cmp:'low' },
+    { key:'wellBaby',    label:'Cuidado del bebé sano', hint:'Well baby care', cmp:'low' },
   ]},
   { title: 'Otros', rows: [
     { key:'links', label:'Enlaces / documentos', hint:'Summary of benefits, etc.', cmp:'none' },
@@ -226,25 +302,30 @@ const SECTIONS = [
 const ROWS = SECTIONS.flatMap(s => s.rows);
 const STORE = 'insurance-compare-v1';
 
+const AD = '50% after deductible';
 const EXAMPLE = [
-  { name:'Bronze Classic 4700', carrier:'Oscar Health (HMO Florida)', values:{
-    premium:'$140.61', premiumWas:'$2,081.61', deductible:'$4,700', drugDed:'N/A', oop:'$10,150',
+  { name:'Bronze Classic 4700', carrier:'Oscar Health (HMO Florida) · 2026', values:{
+    premium:'$140.61', premiumWas:'$2,081.61', deductible:'$4,700', drugDed:'N/A', oop:'$10,150', coins:'50%',
     network:'HMO', tier:'Expanded Bronze', rating:'Not rated',
     pcp:'$70', specialist:'$125', preventive:'No charge',
-    generic:'$3', brand:'Full price', nonpref:'Full price', specialty:'Full price',
-    xray:'$150', imaging:'Full price', blood:'$70',
-    urgent:'$125', er:'Full price', ambulance:'Full price', hospFac:'Full price', hospPhys:'Full price',
-    outFac:'Full price', outPhys:'Full price', rehab:'$125',
-    mhOut:'$70', mhHosp:'Full price', wellBaby:'No charge', delivery:'Full price' }},
-  { name:'Bronze Elite + PCP Saver Plus', carrier:'Oscar Health (HMO Florida)', values:{
-    premium:'$304.08', premiumWas:'$2,245.08', deductible:'$0', drugDed:'$7,000', oop:'$10,600',
+    generic:'$3', brand:AD, nonpref:AD, specialty:AD,
+    xray:'$150', ultrasound:'', imaging:AD, blood:'$70',
+    urgent:'$125', er:AD, ambulance:AD, hospFac:AD, hospPhys:AD,
+    outFac:AD, outPhys:AD, rehab:'$125',
+    mhOut:'$70', mhHosp:AD,
+    prenatal:'No charge', deliveryPro:AD, delivery:AD, wellBaby:'No charge',
+    notes:'Summary of Benefits: el ejemplo oficial de un embarazo con parto ("Peg is Having a Baby") cuesta $7,700.' }},
+  { name:'Bronze Elite + PCP Saver Plus', carrier:'Oscar Health (HMO Florida) · 2026', values:{
+    premium:'$304.08', premiumWas:'$2,245.08', deductible:'$0', drugDed:'$7,000', oop:'$10,600', coins:'50%',
     network:'HMO', tier:'Expanded Bronze', rating:'Not rated',
     pcp:'$50', specialist:'$125', preventive:'No charge',
-    generic:'$3', brand:'Full price', nonpref:'Full price', specialty:'Full price',
-    xray:'$150', imaging:'$750', blood:'$65',
-    urgent:'$75', er:'$2500 copay', ambulance:'$2500 copay', hospFac:'$3000 per day', hospPhys:'$350',
+    generic:'$3', brand:'$125 after drug deductible', nonpref:'50% after drug deductible', specialty:'50% after drug deductible',
+    xray:'$150', ultrasound:'', imaging:'$750', blood:'$65',
+    urgent:'$75', er:'$2500 copay', ambulance:'$2500 copay', hospFac:'$3000 per day (máx 2 días)', hospPhys:'$350',
     outFac:'$1200 copay', outPhys:'$350', rehab:'$125',
-    mhOut:'$125', mhHosp:'$3000 per day', wellBaby:'No charge', delivery:'$3000 copay' }},
+    mhOut:'$125', mhHosp:'$3000 per day (máx 2 días)',
+    prenatal:'No charge', deliveryPro:'$350', delivery:'$3000 copay', wellBaby:'No charge',
+    notes:'Summary of Benefits: el ejemplo oficial de un embarazo con parto ("Peg is Having a Baby") cuesta $4,000. El hospital del parto dice $3,000 por día con máximo 2 días: confirmar con Oscar si son $3,000 o $6,000.' }},
 ];
 
 let uid = 1;
@@ -256,6 +337,7 @@ const newPlan = (from) => ({
 });
 
 let state = load() || { plans: [newPlan()] };
+state.profile = mergeProfile(state.profile);
 
 function load(){
   try{
@@ -277,7 +359,7 @@ function parseCost(raw){
   if (/(full price|precio completo|no cubierto|not covered|100\s*%\s*(coins|coas))/.test(s)) return { kind:'any', n:Infinity };
   const m = s.replace(/,/g,'').match(/-?\d+(\.\d+)?/);
   if (!m) return null;
-  return { kind: s.includes('%') ? 'pct' : 'usd', n: parseFloat(m[0]) };
+  return { kind: s.includes('%') ? 'pct' : 'usd', n: parseFloat(m[0]), perDay: /(per day|por d[ií]a|\/ ?d[ií]a|\/ ?day)/.test(s) };
 }
 const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
 
@@ -330,7 +412,7 @@ function render(){
   SECTIONS.forEach(sec => {
     h += `<tr class="section"><th>${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</th>${'<td></td>'.repeat(n)}<td class="addcol"></td></tr>`;
     sec.rows.forEach(r => {
-      h += `<tr class="row" data-key="${r.key}"><th class="lbl">${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
+      h += `<tr class="row${isFocus(r.key)?" focus":""}" data-key="${r.key}"><th class="lbl">${isFocus(r.key)?`<span class="star" title="Importante en tu situación">★</span>`:""}${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
       state.plans.forEach((p, i) => {
         if (r.calc){ h += `<td class="cell calc" data-plan="${i}"></td>`; return; }
         const v = p.values[r.key] ?? '';
@@ -351,6 +433,7 @@ function render(){
   h += '</tbody>';
   grid.innerHTML = h;
   fitNames();
+  renderProfileForm();
   refresh();
 }
 function fitName(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
@@ -383,6 +466,7 @@ function refresh(){
   grid.querySelectorAll('th.planhead').forEach((th,i) => {
     th.querySelector('.wins').textContent = state.plans.length > 1 && wins[i] ? `🏆 Mejor en ${wins[i]} ${wins[i]===1?'categoría':'categorías'}` : '';
   });
+  renderResults();
 }
 
 /* ---------- events ---------- */
@@ -394,7 +478,9 @@ grid.addEventListener('input', e => {
       if (/\n/.test(t.value)) t.value = t.value.replace(/\n+/g, ' ');
       fitName(t);
     }
-    state.plans[+head.dataset.plan][t.dataset.field] = t.value; save(); return;
+    state.plans[+head.dataset.plan][t.dataset.field] = t.value; save();
+    if (t.classList.contains('name')){ renderProfileForm(); renderResults(); }
+    return;
   }
   const td = t.closest('td.cell');
   if (!td) return;
@@ -408,13 +494,15 @@ grid.addEventListener('click', e => {
   if (b.id === 'btnAdd'){ openMenu(b); return; }
   const head = b.closest('th.planhead');
   if (!head) return;
-  const i = +head.dataset.plan, P = state.plans;
+  const i = +head.dataset.plan, P = state.plans, pg = state.profile.preg;
+  const curPlan = pg.current === '' ? null : P[+pg.current];
   switch (b.dataset.act){
     case 'dup':   P.splice(i+1, 0, newPlan(P[i])); break;
     case 'del':   if (!confirmDelete(P[i])) return; P.splice(i, 1); break;
     case 'left':  [P[i-1], P[i]] = [P[i], P[i-1]]; break;
     case 'right': [P[i+1], P[i]] = [P[i], P[i+1]]; break;
   }
+  pg.current = curPlan && P.includes(curPlan) ? String(P.indexOf(curPlan)) : '';
   save(); render();
 });
 function confirmDelete(p){
@@ -460,15 +548,15 @@ document.getElementById('btnPrint').addEventListener('click', () => window.print
 document.getElementById('btnExample').addEventListener('click', () => {
   const hasData = state.plans.some(p => p.name || Object.values(p.values).some(v => v));
   if (hasData && !window.confirm('Esto reemplaza los planes actuales con el ejemplo. ¿Continuar?')) return;
-  state = { plans: EXAMPLE.map(p => ({ ...newPlan(), name:p.name, carrier:p.carrier, values:{...p.values} })) };
+  state.profile.preg.current = ''; state = { profile: state.profile, plans: EXAMPLE.map(p => ({ ...newPlan(), name:p.name, carrier:p.carrier, values:{...p.values} })) };
   save(); render();
 });
 document.getElementById('btnReset').addEventListener('click', () => {
   if (!window.confirm('¿Borrar todos los planes y empezar de nuevo?')) return;
-  state = { plans: [newPlan()] }; save(); render();
+  state.profile.preg.current = ''; state = { profile: state.profile, plans: [newPlan()] }; save(); render();
 });
 document.getElementById('btnExport').addEventListener('click', () => {
-  const data = JSON.stringify({ plans: state.plans.map(({name,carrier,values}) => ({name,carrier,values})) }, null, 2);
+  const data = JSON.stringify({ profile: state.profile, plans: state.plans.map(({name,carrier,values}) => ({name,carrier,values})) }, null, 2);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], { type:'application/json' }));
   a.download = 'comparacion-seguros.json';
@@ -482,10 +570,366 @@ fileIn.addEventListener('change', async () => {
   try{
     const d = JSON.parse(await f.text());
     if (!Array.isArray(d.plans) || !d.plans.length) throw 0;
-    state = { plans: d.plans.map(p => ({ ...newPlan(), name:String(p.name||''), carrier:String(p.carrier||''), values:{...(p.values||{})} })) };
+    state.profile.preg.current = ''; state = { profile: d.profile ? mergeProfile(d.profile) : state.profile, plans: d.plans.map(p => ({ ...newPlan(), name:String(p.name||''), carrier:String(p.carrier||''), values:{...(p.values||{})} })) };
     save(); render();
   }catch(e){ window.alert('Archivo no válido.'); }
 });
+
+/* =====================  MI SITUACIÓN  ===================== */
+const FOCUS = {
+  normal:   ['premium','deductible','oop','pcp','specialist','generic','network'],
+  pregnant: ['premium','deductible','oop','coins','prenatal','ultrasound','xray','blood','deliveryPro','delivery','wellBaby','network'],
+};
+function defaultProfile(){
+  return {
+    status: 'normal',
+    normal: { pcp:4, specialist:2, urgent:0, blood:1, xray:0, generic:0 },
+    preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', anyMonth:false, current:'' },
+    prices: { pcp:150, specialist:250, urgent:200, blood:150, xray:150, generic:15, ob:200, us:300,
+              facV:8000, proV:2500, facC:13000, proC:3500 },
+  };
+}
+function mergeProfile(p){
+  const d = defaultProfile();
+  if (!p || typeof p !== 'object') return d;
+  return { status: p.status === 'pregnant' ? 'pregnant' : 'normal',
+    normal: { ...d.normal, ...(p.normal||{}) }, preg: { ...d.preg, ...(p.preg||{}) }, prices: { ...d.prices, ...(p.prices||{}) } };
+}
+function isFocus(key){ return (FOCUS[state.profile.status] || []).includes(key); }
+
+const PRICE_LABELS = { pcp:'Consulta médico primario', specialist:'Consulta especialista', urgent:'Urgent care', blood:'Análisis de sangre',
+  xray:'Rayos X', generic:'Receta genérica', ob:'Consulta prenatal', us:'Ultrasonido',
+  facV:'Hospital – parto natural', proV:'Médico – parto natural', facC:'Hospital – cesárea', proC:'Médico – cesárea' };
+const NORMAL_ITEMS = [
+  { k:'pcp',        label:'Visitas al médico primario' },
+  { k:'specialist', label:'Visitas al especialista' },
+  { k:'urgent',     label:'Visitas a urgent care' },
+  { k:'blood',      label:'Análisis de sangre' },
+  { k:'xray',       label:'Rayos X' },
+  { k:'generic',    label:'Recetas genéricas al mes', mult:12 },
+];
+const DEFAULT_COINS = 0.5;
+const money0 = n => (n < 0 ? '-$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+const monthName = d => d.toLocaleDateString('es-US', { month:'short', year:'numeric' }).replace('.', '');
+const fmtDate = d => d.toLocaleDateString('es-US', { day:'numeric', month:'short', year:'numeric' }).replace('.', '');
+const planName = i => {
+  const nm = (state.plans[i].name || '').trim();
+  if (!nm) return `Plan ${i+1}`;
+  return state.plans.some((p, j) => j !== i && (p.name || '').trim() === nm) ? `${nm} (Plan ${i+1})` : nm;
+};
+
+/* ---- motor de costos ---- */
+function rawOf(plan, key, fallback){
+  const v = plan.values[key];
+  return (v == null || String(v).trim() === '') && fallback ? plan.values[fallback] : v;
+}
+function planNums(plan){
+  const p = parseCost(plan.values.premium), d = parseCost(plan.values.deductible),
+        o = parseCost(plan.values.oop),     c = parseCost(plan.values.coins);
+  const coinsKnown = !!(c && (c.kind === 'pct' || c.n === 0));
+  return {
+    premium: p && p.kind !== 'pct' && isFinite(p.n) ? p.n : 0,
+    ded:     d && d.kind !== 'pct' && isFinite(d.n) ? d.n : 0,
+    oop:     o && o.kind !== 'pct' && isFinite(o.n) ? o.n : Infinity,
+    coins:   coinsKnown ? (c.kind === 'pct' ? c.n/100 : 0) : DEFAULT_COINS,
+    coinsKnown,
+  };
+}
+// Lo que pagas por UN servicio. acc = lo pagado este año en este plan {ded, oop}.
+function charge(raw, price, nums, acc, info){
+  const v = parseCost(raw), s = String(raw ?? '').toLowerCase();
+  let pay;
+  if (!v && info) info.missing = true;
+  if (!v || v.n === Infinity || (v.kind === 'pct' && /deduct|after|despu/.test(s) && !/drug|medic/.test(s))){
+    // precio completo hasta cubrir el deducible, luego coaseguro
+    const coins = v && v.kind === 'pct' ? v.n/100 : nums.coins;
+    if (!(v && v.kind === 'pct') && !nums.coinsKnown && info) info.coinsAssumed = true;
+    const toDed = Math.max(0, Math.min(price, nums.ded - acc.ded));
+    acc.ded += toDed;
+    pay = toDed + (price - toDed) * coins;
+  } else if (v.kind === 'pct') {
+    pay = price * v.n / 100;
+  } else {
+    pay = Math.min(v.n * (v.perDay && info && info.days ? Math.min(info.days, 2) : 1), price);
+  }
+  pay = Math.max(0, Math.min(pay, nums.oop - acc.oop));
+  acc.oop += pay;
+  return pay;
+}
+
+/* ---- modo normal ---- */
+function normalCost(plan){
+  const P = state.profile, nums = planNums(plan), acc = { ded:0, oop:0 }, info = {};
+  let med = 0;
+  NORMAL_ITEMS.forEach(it => {
+    const n = Math.max(0, Math.round((+P.normal[it.k] || 0) * (it.mult || 1)));
+    for (let i = 0; i < n; i++) med += charge(plan.values[it.k], +P.prices[it.k] || 0, nums, acc, info);
+  });
+  return { prem: nums.premium * 12, med, total: nums.premium * 12 + med, info };
+}
+
+/* ---- modo embarazo ---- */
+const DAY = 864e5;
+function pregTimeline(){
+  const P = state.profile.preg;
+  if (!P.due) return null;
+  const due = new Date(P.due + 'T12:00:00');
+  if (isNaN(due)) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const lmp = new Date(+due - 280*DAY), at = w => new Date(+lmp + w*7*DAY);
+  const week = Math.floor((today - lmp) / (7*DAY));
+  if (week > 46) return { error: 'La fecha de parto ya pasó.' };
+  if (week < -2) return { error: 'La fecha de parto está a más de 42 semanas. Revisa la fecha.' };
+  const high = P.risk === 'high';
+  const sched = {
+    ob:  high ? [8,10,12,14,16,18,20,22,24,26,28,30,32,33,34,35,36,37,38,39] : [8,12,16,20,24,28,30,32,34,36,37,38,39],
+    mfm: high ? [12,16,20,24,28,32,36] : [],
+    us:  high ? [8,12,20,24,28,32,34,36,38] : [8,12,20],
+    lab: high ? [8,11,16,24,26,28,32,36] : [8,11,26,28,36],
+    post:[46],
+  };
+  const events = [];
+  Object.entries(sched).forEach(([type, weeks]) => weeks.forEach(w => events.push({ type, w, date: at(w) })));
+  events.push({ type:'birth', w:40, date: due });
+  const future = events.filter(e => e.date >= today).sort((a,b) => a.date - b.date);
+  const y0 = today.getFullYear(), m0 = today.getMonth();
+  const idx = d => (d.getFullYear() - y0) * 12 + d.getMonth() - m0;
+  const last = future[future.length - 1].date;
+  const months = Array.from({ length: idx(last) + 1 }, (_, i) => {
+    const d = new Date(y0, m0 + i, 1), end = new Date(y0, m0 + i + 1, 0);
+    return { y: d.getFullYear(), m: d.getMonth(), date: d, events: [],
+      w1: Math.max(0, Math.floor((Math.max(+d, +today) - lmp) / (7*DAY))), w2: Math.floor((end - lmp) / (7*DAY)) };
+  });
+  future.forEach(e => months[idx(e.date)].events.push(e));
+  return { due, lmp, week, months, birthIdx: idx(due), today };
+}
+function eventCost(plan, e, nums, acc, info){
+  const P = state.profile, pr = P.prices, ces = P.preg.delivery === 'cesarea';
+  switch (e.type){
+    case 'ob': case 'post': {
+      const raw = P.preg.billing === 'specialist' ? plan.values.specialist
+                : P.preg.billing === 'preventive' ? 'No charge'
+                : rawOf(plan, 'prenatal', 'specialist');
+      return charge(raw, +pr.ob || 0, nums, acc, info);
+    }
+    case 'mfm': return charge(plan.values.specialist, +pr.specialist || 0, nums, acc, info);
+    case 'us':  return charge(rawOf(plan, 'ultrasound', 'xray'), +pr.us || 0, nums, acc, info);
+    case 'lab': return charge(plan.values.blood, +pr.blood || 0, nums, acc, info);
+    case 'birth': {
+      info.days = ces ? 4 : 2;
+      const fac = charge(plan.values.delivery, +(ces ? pr.facC : pr.facV) || 0, nums, acc, info);
+      info.days = 0;
+      return fac + charge(rawOf(plan, 'deliveryPro', 'hospPhys'), +(ces ? pr.proC : pr.proV) || 0, nums, acc, info);
+    }
+  }
+  return 0;
+}
+// costo de quedarse en un plan del mes s al mes e-1 (el deducible se reinicia al empezar y cada 1 de enero)
+function stint(plan, months, s, e){
+  const nums = planNums(plan), info = {}, per = [];
+  let acc, year, total = 0;
+  for (let i = s; i < e; i++){
+    const M = months[i];
+    if (M.y !== year){ acc = { ded:0, oop:0 }; year = M.y; }
+    let c = nums.premium;
+    M.events.forEach(ev => c += eventCost(plan, ev, nums, acc, info));
+    per.push(c); total += c;
+  }
+  return { total, per, info };
+}
+// start/lockK: los meses antes de "start" quedan fijos en el plan lockK (el que ya tienes)
+function bestStrategy(months, points, start = 0, lockK = -1){
+  const pts = [...new Set(points)].filter(i => i >= start && i < months.length).sort((a,b) => a - b);
+  if (pts[0] !== start) pts.unshift(start);
+  pts.push(months.length);
+  const best = pts.map(() => Infinity), prev = [];
+  best[0] = 0;
+  for (let j = 1; j < pts.length; j++) for (let i = 0; i < j; i++){
+    if (!isFinite(best[i])) continue;
+    state.plans.forEach((p, k) => {
+      const c = best[i] + stint(p, months, pts[i], pts[j]).total;
+      if (c < best[j] - 0.005){ best[j] = c; prev[j] = { i, k }; }
+    });
+  }
+  const segs = [];
+  for (let j = pts.length - 1; j > 0; j = prev[j].i) segs.unshift({ s: pts[prev[j].i], e: pts[j], k: prev[j].k });
+  let total = best[pts.length - 1];
+  if (start > 0 && lockK >= 0){ segs.unshift({ s: 0, e: start, k: lockK, locked: true }); total += stint(state.plans[lockK], months, 0, start).total; }
+  const merged = [];
+  segs.forEach(g => { const l = merged[merged.length - 1]; if (l && l.k === g.k && !l.locked && !g.locked) l.e = g.e; else merged.push({ ...g }); });
+  return { total, segs: merged };
+}
+
+/* ---- formulario ---- */
+const pform = document.getElementById('pform');
+const numField = (path, label, v) => `<label class="field">${esc(label)}<input type="number" min="0" step="1" inputmode="numeric" data-p="${path}" value="${esc(v)}"></label>`;
+const selField = (path, label, v, opts) => `<label class="field">${esc(label)}<select data-p="${path}">${opts.map(([val, t]) => `<option value="${val}"${val === v ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>`;
+function renderProfileForm(){
+  const P = state.profile, preg = P.status === 'pregnant';
+  let h = `<div class="seg" role="group" aria-label="Estado de la persona">
+    <button data-status="normal" aria-pressed="${!preg}">🙂 Normal</button>
+    <button data-status="pregnant" aria-pressed="${preg}">🤰 Embarazada</button></div>`;
+  let prices;
+  if (!preg){
+    h += `<p class="muted" style="margin:10px 0 6px">¿Cuántas veces al año esperas usar cada servicio?</p><div class="fields">`;
+    NORMAL_ITEMS.forEach(it => h += numField('normal.' + it.k, it.label, P.normal[it.k]));
+    h += `</div>`;
+    prices = ['pcp','specialist','urgent','blood','xray','generic'];
+  } else {
+    h += `<div class="fields" style="margin-top:10px">
+      <label class="field">Fecha probable de parto<input type="date" data-p="preg.due" value="${esc(P.preg.due)}"></label>
+      ${selField('preg.risk', 'Tipo de embarazo', P.preg.risk, [['normal','Normal'],['high','Alto riesgo (más consultas)']])}
+      ${selField('preg.delivery', 'Tipo de parto', P.preg.delivery, [['vaginal','Natural'],['cesarea','Cesárea']])}
+      ${selField('preg.billing', 'Consultas prenatales se cobran…', P.preg.billing, [['plan','Según el plan (fila Consultas prenatales)'],['specialist','Como especialista (copago)'],['preventive','Gratis (preventivo)']])}
+      ${selField('preg.current', 'Plan que tengo ahora (hasta el 31 de dic)', String(P.preg.current), [['', 'Ninguno / todavía puedo elegir'], ...state.plans.map((_, i) => [String(i), planName(i)])])}
+      <label class="field check"><input type="checkbox" data-p="preg.anyMonth"${P.preg.anyMonth ? ' checked' : ''}> Calcular también si pudiera cambiar de plan en cualquier mes (solo con Período Especial de Inscripción)</label>
+    </div>`;
+    prices = ['ob','us','blood','specialist','facV','proV','facC','proC'];
+  }
+  h += `<details class="prices" style="margin-top:10px"><summary>Precios estimados de los servicios (se usan cuando el plan dice "Full price" o "% después del deducible")</summary><div class="fields">`;
+  prices.forEach(k => h += numField('prices.' + k, PRICE_LABELS[k] + ' ($)', P.prices[k]));
+  h += `</div></details>`;
+  pform.innerHTML = h;
+}
+function setPath(obj, path, val){ const ks = path.split('.'); let o = obj; ks.slice(0, -1).forEach(k => o = o[k]); o[ks[ks.length - 1]] = val; }
+function onProfileInput(e){
+  const t = e.target; if (!t.dataset.p) return;
+  setPath(state.profile, t.dataset.p, t.type === 'checkbox' ? t.checked : t.type === 'number' ? (t.value === '' ? 0 : +t.value) : t.value);
+  save(); renderResults();
+}
+pform.addEventListener('input', onProfileInput);
+pform.addEventListener('change', onProfileInput);
+pform.addEventListener('click', e => {
+  const b = e.target.closest('button[data-status]'); if (!b) return;
+  state.profile.status = b.dataset.status; save(); render();
+});
+
+/* ---- resultados ---- */
+const POINTS = {
+  normal: `<div class="box"><h3>★ Puntos a mirar (situación normal)</h3><ol>
+    <li><b>Pago mensual × 12</b>: es lo único que pagas seguro.</li>
+    <li><b>Copagos de médico y especialista</b> × las veces que vas al año.</li>
+    <li><b>Medicamentos</b> que tomas: genéricos vs. de marca y el deducible de medicinas.</li>
+    <li><b>Deducible y coaseguro</b>: importan para todo lo que dice "después del deducible" (hospital, emergencias, MRI).</li>
+    <li><b>Máximo de bolsillo</b>: tu peor caso en un año malo.</li>
+    <li><b>Red</b>: que tus médicos estén en la red (HMO solo cubre la red).</li></ol></div>`,
+  pregnant: `<div class="box"><h3>★ Puntos a mirar (embarazo)</h3><ol>
+    <li><b>Costo del parto</b> = médico + hospital. Compara copagos fijos (ej. $350 + $3,000) contra "50% después del deducible".</li>
+    <li><b>Deducible y coaseguro</b>: si el parto va "sujeto a deducible", pagas el deducible completo y luego el %.</li>
+    <li><b>Máximo de bolsillo</b>: tu techo si hay cesárea, complicaciones o NICU.</li>
+    <li><b>Consultas prenatales</b>: en muchos planes son $0 (busca "Pre- and post-natal care" en el Summary of Benefits).</li>
+    <li><b>Ultrasonidos y análisis</b>: suelen cobrarse aparte como "Diagnostic test".</li>
+    <li><b>Ejemplo "Peg is Having a Baby"</b> (última página del Summary of Benefits): es el costo oficial de un embarazo con parto en ese plan.</li>
+    <li><b>Red</b>: que tu obstetra y el hospital donde quieres dar a luz estén en la red.</li>
+    <li><b>El bebé</b>: tendrá su propio deducible y máximo; revisa "Well baby care" y el pediatra.</li></ol></div>`,
+};
+function dataWarnings(infos){
+  const miss = [], assumed = [];
+  infos.forEach((inf, i) => { if (inf.missing) miss.push(planName(i)); if (inf.coinsAssumed) assumed.push(planName(i)); });
+  let w = '';
+  if (miss.length) w += `<li>Faltan datos en <b>${miss.map(esc).join(', ')}</b>: lo que está vacío se calculó como precio completo.</li>`;
+  if (assumed.length) w += `<li>Coaseguro vacío en <b>${assumed.map(esc).join(', ')}</b>: se asumió ${DEFAULT_COINS*100}%.</li>`;
+  return w;
+}
+function renderResults(){
+  const box = document.getElementById('presults');
+  if (!box) return;
+  box.innerHTML = state.profile.status === 'pregnant' ? pregHTML() : normalHTML();
+}
+function kpiHTML(totals, sub){
+  const min = Math.min(...totals);
+  return `<div class="kpis">${totals.map((t, i) => `<div class="kpi${state.plans.length > 1 && t === min ? ' best' : ''}">
+    <div class="t">${state.plans.length > 1 && t === min ? '🏆 ' : ''}${i+1}. ${esc(state.plans[i].name || 'Plan ' + (i+1))}</div><div class="v">${money0(t)}</div><div class="s">${sub(i)}</div></div>`).join('')}</div>`;
+}
+function normalHTML(){
+  const res = state.plans.map(normalCost);
+  let h = `<h3 style="margin:0 0 8px;font-size:.95rem">Lo que te sale del bolsillo en un año (prima + copagos)</h3>`;
+  h += kpiHTML(res.map(r => r.total), i => `Prima ${money0(res[i].prem)} + médicos ${money0(res[i].med)}`);
+  if (state.plans.length > 1){
+    const nums = state.plans.map(planNums);
+    const c = nums.reduce((b, n, i) => n.premium < nums[b].premium ? i : b, 0);
+    let lines = '';
+    state.plans.forEach((p, i) => {
+      if (i === c) return;
+      const diff = (nums[i].premium - nums[c].premium) * 12;
+      if (diff <= 0) return;
+      const parts = NORMAL_ITEMS.filter(it => !it.mult).map(it => {
+        const price = +state.profile.prices[it.k] || 0;
+        const sav = charge(state.plans[c].values[it.k], price, nums[c], { ded:0, oop:0 }) - charge(p.values[it.k], price, nums[i], { ded:0, oop:0 });
+        return sav > 0 ? `<li>${Math.ceil(diff / sav)} ${it.label.toLowerCase()} al año (ahorra ${money0(sav)} por vez)</li>`
+                       : `<li>${it.label}: <b>nunca</b> (no es más barato)</li>`;
+      }).join('');
+      lines += `<p style="margin:6px 0 2px"><b>${esc(planName(i))}</b> cuesta <b>${money0(diff)}</b> más al año que <b>${esc(planName(c))}</b>. Para recuperarlo solo con visitas necesitarías:</p><ul style="margin:0;padding-left:20px">${parts}</ul>`;
+    });
+    if (lines) h += `<div class="strategy" style="margin-top:12px"><h3>⚖️ Punto de equilibrio</h3>${lines}</div>`;
+  }
+  const w = dataWarnings(res.map(r => r.info));
+  h += `<div class="notes" style="margin-top:12px">${POINTS.normal}${w ? `<div class="box warn"><h3>⚠ Ten en cuenta</h3><ul>${w}</ul></div>` : ''}</div>`;
+  return h;
+}
+function pregHTML(){
+  const g = pregTimeline();
+  const P = state.profile.preg;
+  if (!g || g.error) return `<div class="box warn">${g ? esc(g.error) : 'Pon la <b>fecha probable de parto</b> para calcular el costo mes a mes.'}</div><div class="notes" style="margin-top:12px">${POINTS.pregnant}</div>`;
+  const { months, birthIdx, today } = g, M = months.length, n = state.plans.length;
+  const singles = state.plans.map(p => stint(p, months, 0, M));
+  const totals = singles.map(s => s.total);
+  const bestSingle = totals.indexOf(Math.min(...totals));
+  const realPts = [0, ...months.map((m, i) => m.m === 0 ? i : -1), birthIdx + 1];
+  const firstJan = months.findIndex((m, i) => i > 0 && m.m === 0);
+  const cur = P.current === '' || P.current == null ? -1 : +P.current;
+  const locked = cur >= 0 && cur < n && firstJan > 0;
+  const real = bestStrategy(months, realPts, locked ? firstJan : 0, locked ? cur : -1);
+  const free = P.anyMonth ? bestStrategy(months, months.map((_, i) => i)) : null;
+  const range = (s, e) => s === e - 1 ? monthName(months[s].date) : `${monthName(months[s].date)} – ${monthName(months[e-1].date)}`;
+  const stratHTML = (st, title) => {
+    const save = totals[bestSingle] - st.total;
+    return `<div class="strategy"><h3>${title}</h3>${st.segs.length === 1
+      ? `<p style="margin:0">Quédate con <b>${esc(planName(st.segs[0].k))}</b> todo el tiempo: <b>${money0(st.total)}</b>.</p>`
+      : `<ol>${st.segs.map(sg => `<li><b>${range(sg.s, sg.e)}</b>: ${esc(planName(sg.k))}${sg.locked ? ' <span class="muted">(el que ya tienes)</span>' : ''}</li>`).join('')}</ol>
+         <p style="margin:4px 0 0">Total <b>${money0(st.total)}</b>${save > 0.5 ? ` · ahorras <b>${money0(save)}</b> vs. quedarte con ${esc(planName(bestSingle))}` : ''}.</p>`}</div>`;
+  };
+  const pick = new Map(); real.segs.forEach(sg => { for (let i = sg.s; i < sg.e; i++) pick.set(i, sg.k); });
+  const maxLoad = Math.max(1, ...months.map(m => m.events.filter(e => e.type !== 'birth').length));
+  const weekTxt = g.week < 0 ? 'aún no empieza' : `semana <b>${g.week}</b>`;
+
+  let h = `<p class="status" style="margin:0 0 10px">🤰 Hoy: ${weekTxt} · Parto estimado: <b>${fmtDate(g.due)}</b> · faltan <b>${Math.max(0, birthIdx)}</b> ${birthIdx === 1 ? 'mes' : 'meses'}</p>`;
+  h += `<h3 style="margin:0 0 8px;font-size:.95rem">Lo que te sale del bolsillo desde hoy hasta la consulta postparto (prima + gastos)</h3>`;
+  h += kpiHTML(totals, i => `Prima ${money0(planNums(state.plans[i]).premium * M)} + médicos ${money0(totals[i] - planNums(state.plans[i]).premium * M)}`);
+  if (n > 1){
+    h += `<div class="notes" style="margin-top:12px">${stratHTML(real, '✅ Mejor estrategia realista <span class="muted">(cambios solo el 1 de enero y después del parto)</span>')}`;
+    if (free) h += stratHTML(free, '🧪 Si pudieras cambiar en cualquier mes <span class="muted">(necesita Período Especial)</span>');
+    h += `</div>`;
+  }
+  // tabla mes a mes
+  h += `<div class="tl" style="margin-top:12px"><table><thead><tr><th>Mes</th><th>Semanas</th><th>Consultas</th><th>Eco</th><th>Análisis</th><th style="text-align:left">Carga</th>`;
+  state.plans.forEach((_, i) => { const nm = state.plans[i].name || 'Plan ' + (i+1); h += `<th title="${esc(nm)}">${i+1}. ${esc(nm.length > 14 ? nm.slice(0, 13) + '…' : nm)}</th>`; });
+  h += `</tr></thead><tbody>`;
+  months.forEach((m, i) => {
+    const cnt = t => m.events.filter(e => t.includes(e.type)).length;
+    const consults = cnt(['ob','mfm','post']), load = m.events.filter(e => e.type !== 'birth').length;
+    const isBirth = i === birthIdx;
+    const vals = singles.map(s => s.per[i]), mn = Math.min(...vals), allEq = vals.every(v => Math.abs(v - vals[0]) < 0.5);
+    h += `<tr class="${isBirth ? 'birth' : ''}"><td>${monthName(m.date)}${isBirth ? ' 👶 Parto' : ''}${m.m === 0 && i > 0 ? ' 🔄' : ''}</td>
+      <td>${m.w1 > 42 ? 'postparto' : `${m.w1}–${Math.min(m.w2, 46)}`}</td><td>${consults || ''}</td><td>${cnt(['us']) || ''}</td><td>${cnt(['lab']) || ''}</td>
+      <td style="text-align:left"><span class="bar" style="width:${Math.round(load / maxLoad * 60)}px"></span></td>`;
+    vals.forEach((v, k) => h += `<td class="${n > 1 && !allEq && Math.abs(v - mn) < 0.5 ? 'best' : ''}">${money0(v)}${n > 1 && pick.get(i) === k ? ' ✓' : ''}</td>`);
+    h += `</tr>`;
+  });
+  h += `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td></td>${totals.map((t, k) => `<td class="${n > 1 && k === bestSingle ? 'best' : ''}">${money0(t)}</td>`).join('')}</tr></tbody></table></div>`;
+  h += `<p class="muted" style="margin:6px 0 0">Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia realista · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
+
+  // advertencias
+  const birthYear = g.due.getFullYear(), crosses = months.slice(0, birthIdx + 1).some(m => m.y !== today.getFullYear());
+  let w = `<li><b>El embarazo no te deja cambiar de plan a mitad de año</b> en Florida (HealthCare.gov). Solo puedes cambiar en la inscripción abierta (para empezar el 1 de enero) o en los 60 días después del nacimiento, cuando también agregas al bebé.</li>`;
+  if (birthYear > today.getFullYear()) w += `<li>El parto cae en <b>${birthYear}</b>: el plan que elijas en esta inscripción abierta es el que paga el parto. Para que empiece el 1 de enero, inscríbete antes del <b>15 de diciembre</b>.</li>`;
+  if (crosses) w += `<li>El embarazo cruza el 1 de enero: el deducible y el máximo de bolsillo vuelven a empezar en ${today.getFullYear() + 1}.</li>`;
+  w += `<li>Cambiar de plan también reinicia el deducible y el máximo de bolsillo.</li>`;
+  w += `<li>Los precios de hospital y médico son estimados; ajústalos en "Precios estimados". Pregunta al seguro cuánto cuesta el parto en tu hospital.</li>`;
+  w += dataWarnings(singles.map(s => s.info));
+  h += `<div class="notes" style="margin-top:12px"><div class="box warn"><h3>⚠ Ten en cuenta</h3><ul>${w}</ul></div>${POINTS.pregnant}</div>`;
+  return h;
+}
 
 render();
 </script>
