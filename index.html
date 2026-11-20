@@ -65,7 +65,7 @@ td.calc.best{color:var(--best-ink)} td.calc.worst{color:var(--worst-ink)}
 td.addcol{min-width:70px;width:70px;border-bottom-color:transparent}
 tr.section th{position:sticky;left:0;background:var(--section);text-align:left;padding:7px 12px;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text)}
 tr.section td{background:var(--section)}
-tr.section th span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);margin-left:6px}
+tr.section th .sec-t>span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);margin-left:6px}
 tr.row:nth-child(even) .lbl{background:var(--surface-2)}
 tr.row:nth-child(even) td.cell:not(.best):not(.worst){background:var(--surface-2)}
 tr.row.hidden{display:none}
@@ -84,7 +84,8 @@ thead th.lbl{z-index:4;vertical-align:bottom;color:var(--muted);font-size:.8rem;
 .icon{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:6px;width:26px;height:26px;display:inline-grid;place-items:center;padding:0;font-size:13px}
 .icon:hover{color:var(--accent);border-color:var(--accent)}
 .icon.del:hover{color:var(--worst-ink);border-color:var(--worst-ink)}
-.wins{margin-top:6px;font-size:.78rem;color:var(--best-ink);min-height:1em}
+.wins{margin-top:6px;font-size:.78rem;color:var(--muted);min-height:1em;font-variant-numeric:tabular-nums}
+.wins.top{color:var(--best-ink);font-weight:700}
 th.addhead{width:70px;min-width:70px;vertical-align:middle;text-align:center;position:sticky;top:0}
 .plus{width:44px;height:44px;border-radius:50%;border:2px dashed var(--accent);background:transparent;color:var(--accent);font-size:26px;line-height:1;display:grid;place-items:center;margin:auto}
 .plus:hover{background:var(--accent);color:var(--accent-ink);border-style:solid}
@@ -118,7 +119,7 @@ footer{max-width:var(--page-max);margin:0 auto;padding:0 var(--gutter) 30px;colo
   td.cell input,td.cell select,td.cell textarea{padding:6px 5px;font-size:.8rem}
   td.calc{padding:6px 5px;font-size:.8rem}
   tr.section th{padding:5px 6px;font-size:.64rem}
-  tr.section th span{display:block;margin:0}
+  tr.section th .sec-t>span{display:block;margin:0}
   .planhead{padding:6px 5px 5px}
   .planhead .num{font-size:.6rem;flex-wrap:wrap;gap:3px}
   .planhead input,.planhead textarea{padding:2px 4px;margin-left:-4px}
@@ -129,6 +130,40 @@ footer{max-width:var(--page-max);margin:0 auto;padding:0 var(--gutter) 30px;colo
   th.addhead,td.addcol{width:52px;min-width:52px}
   .plus{width:34px;height:34px;font-size:20px}
   footer{padding:0 9px 20px;font-size:.7rem}
+}
+/* ---------- Orden y legibilidad ---------- */
+[hidden]{display:none!important}
+.wrap{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);overflow:auto}
+td.cell input,td.cell select,td.calc{font-variant-numeric:tabular-nums}
+tr.section{cursor:pointer;user-select:none}
+tr.section th{position:static}
+.sec-t{position:sticky;left:12px;display:inline-block}
+tr.row.collapsed{display:none}
+.view .toolbar .legend{display:inline-flex;gap:10px;padding:0;margin:0;font-size:.8rem}
+.menu button.danger{color:var(--worst-ink)}
+.empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px}
+.empty .imp-actions{justify-content:center}
+.verdict{border:2px solid var(--best-ink);background:var(--best-bg);border-radius:12px;padding:12px 14px;margin:0 0 12px}
+.verdict .vt{font-weight:700;font-size:1rem;overflow-wrap:anywhere}
+.verdict .vt small,.kpi .t small,.rk-name small{font-weight:400;color:var(--muted);font-size:.78em;margin-left:4px;white-space:nowrap}
+.verdict .vv{font-size:1.6rem;font-weight:800;color:var(--best-ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.verdict .vv span{font-size:.8rem;font-weight:400;color:var(--muted)}
+.verdict .vs{font-size:.82rem}
+.kpi:not(.best) .v{font-size:1.05rem}
+.sub3{margin:14px 0 8px;font-size:.9rem}
+details.box>summary{cursor:pointer;font-weight:700;font-size:.9rem}
+details.box[open]>summary{margin-bottom:6px}
+details.adj>summary{cursor:pointer;font-weight:600;font-size:.88rem;margin:6px 0}
+#prio>summary small{font-weight:400;color:var(--muted)}
+@media (max-width:640px){
+  .lbl small{display:none}
+  td.cell input.long{font-size:.66rem}
+  .sub{display:none}
+  h1{font-size:1rem!important}
+  .view .toolbar .legend{font-size:.7rem;gap:6px}
+  .verdict{padding:10px}
+  .verdict .vv{font-size:1.3rem}
+  .tl .c-hide{display:none}
 }
 /* ---------- Pestañas y carga ---------- */
 .tabs{margin:0 max(var(--gutter), calc((100% - var(--page-max)) / 2 + var(--gutter))) 14px;padding:0;display:flex;gap:4px;border-bottom:1px solid var(--border)}
@@ -229,7 +264,8 @@ footer{max-width:var(--page-max);margin:0 auto;padding:0 var(--gutter) 30px;colo
 .tl table{border-collapse:collapse;width:100%;font-size:.82rem}
 .tl th,.tl td{border-bottom:1px solid var(--border);padding:6px 8px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .tl th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:.75rem}
-.tl th:first-child,.tl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+.tl th:first-child,.tl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1}
+.tl th small{display:block;font-weight:400;font-size:.68rem;color:var(--muted)}
 .tl th:first-child{background:var(--surface-2)}
 .tl td.best{background:var(--best-bg);color:var(--best-ink);font-weight:600}
 .tl tr.birth td{font-weight:700}
@@ -298,35 +334,38 @@ tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
       <div id="impStatus" class="imp-status" hidden></div>
       <div id="impPreview" hidden></div>
     </div>
+    <div class="empty" id="emptyLoad" hidden>
+      <p style="margin:0 0 10px"><b>Aún no tienes planes.</b> Súbelos con 📷 Foto o 📄 PDF, o:</p>
+      <div class="imp-actions"><button class="btn" id="btnEmptyExample">Ver un ejemplo</button><button class="btn" id="btnEmptyManual">✏️ Escribir a mano</button></div>
+    </div>
     <div class="toolbar">
       <label class="toggle"><input type="checkbox" id="onlyDiff"> Solo diferencias</label>
-      <button class="btn" id="btnExample">Cargar ejemplo</button>
-      <button class="btn" id="btnExport">Exportar</button>
-      <button class="btn" id="btnImport">Importar</button>
-      <button class="btn" id="btnPrint">Imprimir / PDF</button>
-      <button class="btn" id="btnReset">Limpiar todo</button>
+      <span class="legend">
+        <span><i class="chip best"></i>Más barato</span>
+        <span><i class="chip worst"></i>Más caro</span>
+      </span>
+      <button class="btn addtrigger" id="btnMore" style="margin-left:auto">⋯ Más</button>
+      <span hidden>
+        <button id="btnExample"></button><button id="btnExport"></button><button id="btnImport"></button>
+        <button id="btnPrint"></button><button id="btnReset"></button>
+      </span>
       <input type="file" id="fileImport" accept="application/json,.json" hidden>
     </div>
-    <div class="legend">
-      <span><i class="chip best"></i>Mejor valor (más bajo)</span>
-      <span><i class="chip worst"></i>Peor valor (más alto / precio completo)</span>
-      <span>Los datos se guardan automáticamente en este navegador.</span>
-    </div>
     <div class="wrap"><table id="grid"></table></div>
-    <p class="foot">Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code>, <code>30%</code> o <code>50% after deductible</code>. "Full price" cuenta como el peor valor.</p>
+    <p class="foot">Toca el título de una sección para abrirla o cerrarla. Los datos se guardan automáticamente en este navegador. Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code>, <code>30%</code> o <code>50% after deductible</code>. "Full price" cuenta como el peor valor.</p>
   </section>
   <section class="view" id="view-analysis" role="tabpanel" hidden>
-    <div class="panel" id="prio">
-      <h2 class="ptitle">⭐ Lo que más me importa</h2>
-      <div class="pbody" id="prioBody"></div>
-    </div>
     <div class="panel" id="profile">
-      <h2 class="ptitle">🎯 Mi situación: ¿cuál plan me conviene?</h2>
+      <h2 class="ptitle">🎯 ¿Cuál plan me conviene?</h2>
       <div class="pbody">
         <div id="pform"></div>
         <div id="presults"></div>
       </div>
     </div>
+    <details class="panel" id="prio">
+      <summary id="prioSum">⭐ Lo que más me importa</summary>
+      <div class="pbody" id="prioBody"></div>
+    </details>
   </section>
 </main>
 
@@ -336,13 +375,13 @@ tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
 const SECTIONS = [
   { title: 'Resumen de costos', rows: [
     { key:'premium',    label:'Pago mensual', hint:'Monthly premium', cmp:'low' },
+    { key:'_annual',    label:'Prima anual', hint:'Pago mensual × 12', calc:'annual' },
+    { key:'_worst',     label:'Peor caso anual', hint:'Prima anual + Out-of-pocket', calc:'worst' },
     { key:'premiumWas', label:'Precio sin subsidio', hint:'"was" / antes del crédito fiscal', cmp:'none' },
     { key:'deductible', label:'Deducible', hint:'Deductible', cmp:'low' },
     { key:'drugDed',    label:'Deducible de medicinas', hint:'Drug deductible', cmp:'low' },
     { key:'oop',        label:'Máximo de bolsillo', hint:'Out-of-pocket max', cmp:'low' },
     { key:'coins',      label:'Coaseguro', hint:'Coinsurance: % que pagas después del deducible', cmp:'low' },
-    { key:'_annual',    label:'Prima anual', hint:'Pago mensual × 12', calc:'annual' },
-    { key:'_worst',     label:'Peor caso anual', hint:'Prima anual + Out-of-pocket', calc:'worst' },
   ]},
   { title: 'Detalles del plan', rows: [
     { key:'network', label:'Red', hint:'Network', type:'select', options:['','HMO','PPO','EPO','POS','Otro'] },
@@ -367,13 +406,13 @@ const SECTIONS = [
     { key:'blood',   label:'Análisis de sangre', hint:'Blood work', cmp:'low' },
   ]},
   { title: 'Hospital y emergencias', rows: [
-    { key:'urgent',     label:'Urgencias (Urgent care)', hint:'Urgent care', cmp:'low' },
+    { key:'urgent',     label:'Urgent care', hint:'Urgent care', cmp:'low' },
     { key:'er',         label:'Sala de emergencias', hint:'Emergency room', cmp:'low' },
     { key:'ambulance',  label:'Ambulancia', hint:'Ambulance', cmp:'low' },
-    { key:'hospFac',    label:'Hospitalización (instalación)', hint:'Hospital stay – facility', cmp:'low' },
-    { key:'hospPhys',   label:'Hospitalización (médico)', hint:'Hospital stay – physician', cmp:'low' },
-    { key:'outFac',     label:'Procedimiento ambulatorio (instalación)', hint:'Outpatient – facility', cmp:'low' },
-    { key:'outPhys',    label:'Procedimiento ambulatorio (médico)', hint:'Outpatient – physician', cmp:'low' },
+    { key:'hospFac',    label:'Hospital – centro', hint:'Hospital stay – facility', cmp:'low' },
+    { key:'hospPhys',   label:'Hospital – médico', hint:'Hospital stay – physician', cmp:'low' },
+    { key:'outFac',     label:'Ambulatorio – centro', hint:'Outpatient – facility', cmp:'low' },
+    { key:'outPhys',    label:'Ambulatorio – médico', hint:'Outpatient – physician', cmp:'low' },
     { key:'rehab',      label:'Rehabilitación física', hint:'Physical rehabilitation', cmp:'low' },
   ]},
   { title: 'Salud mental y adicciones', rows: [
@@ -485,15 +524,13 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;
 
 function render(){
   const n = state.plans.length;
-  let h = '<thead><tr><th class="lbl">Plan / Aseguradora</th>';
+  const blank = state.plans.every(isBlank) && !manualMode;
+  ['.toolbar', '.wrap', '.foot'].forEach(sel => document.querySelector('#view-load ' + sel).hidden = blank);
+  document.getElementById('emptyLoad').hidden = !blank;
+  let h = '<thead><tr><th class="lbl"></th>';
   state.plans.forEach((p, i) => {
     h += `<th class="planhead" data-plan="${i}">
-      <div class="num"><span>Plan ${i+1}</span><span class="actions">
-        ${i>0?`<button class="icon" data-act="left" title="Mover a la izquierda">◀</button>`:''}
-        ${i<n-1?`<button class="icon" data-act="right" title="Mover a la derecha">▶</button>`:''}
-        <button class="icon" data-act="dup" title="Duplicar este plan">⧉</button>
-        ${n>1?`<button class="icon del" data-act="del" title="Eliminar plan">✕</button>`:''}
-      </span></div>
+      <div class="num"><span>Plan ${i+1}</span><span class="actions"><button class="icon addtrigger" data-act="more" title="Opciones del plan" aria-label="Opciones del plan ${i+1}">⋯</button></span></div>
       <textarea class="name" data-field="name" rows="1" placeholder="Nombre del plan">${esc(p.name)}</textarea>
       <input class="carrier" data-field="carrier" placeholder="Aseguradora" value="${esc(p.carrier)}">
       <div class="wins"></div>
@@ -501,10 +538,11 @@ function render(){
   });
   h += `<th class="addhead"><button class="plus addtrigger" id="btnAdd" title="Agregar otro seguro" aria-label="Agregar otro seguro">+</button></th></tr></thead><tbody>`;
 
-  SECTIONS.forEach(sec => {
-    h += `<tr class="section"><th>${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</th>${'<td></td>'.repeat(n)}<td class="addcol"></td></tr>`;
+  orderedSections().forEach(sec => {
+    const open = isSecOpen(sec.title);
+    h += `<tr class="section" data-sec="${esc(sec.title)}"><th colspan="${n + 2}"><span class="sec-t">${open ? '▾' : '▸'} ${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</span></th></tr>`;
     sec.rows.forEach(r => {
-      h += `<tr class="row${isFocus(r.key)?" focus":""}" data-key="${r.key}"><th class="lbl">${starsFor(r.key)}${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
+      h += `<tr class="row${isFocus(r.key)?" focus":""}${open ? '' : ' collapsed'}" data-key="${r.key}"><th class="lbl"${r.hint ? ` title="${esc(r.hint)}"` : ''}>${starsFor(r.key)}${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
       state.plans.forEach((p, i) => {
         if (r.calc){ h += `<td class="cell calc" data-plan="${i}"></td>`; return; }
         const v = p.values[r.key] ?? '';
@@ -515,7 +553,8 @@ function render(){
         } else if (r.type === 'textarea'){
           input = `<textarea data-key="${r.key}" placeholder="—">${esc(v)}</textarea>`;
         } else {
-          input = `<input data-key="${r.key}" value="${esc(v)}" placeholder="—" autocomplete="off">`;
+          const ph = r.key === 'ultrasound' && !v && p.values.xray ? `${p.values.xray} (rayos X)` : '—';
+          input = `<input data-key="${r.key}"${String(v).length > 14 ? ' class="long"' : ''} value="${esc(v)}" placeholder="${esc(ph)}" autocomplete="off">`;
         }
         h += `<td class="cell" data-plan="${i}">${input}</td>`;
       });
@@ -541,7 +580,7 @@ function refresh(){
     let ranks = cells.map(()=> '');
     if (r.calc){
       const vals = state.plans.map(p => calcValue(p, r.calc));
-      cells.forEach((td,i) => td.textContent = vals[i] == null ? '—' : money(vals[i]));
+      cells.forEach((td,i) => td.textContent = vals[i] == null ? '—' : money0(vals[i]));
       ranks = rankRow(vals.map(v => v == null ? null : { kind:'usd', n:v }));
     } else if (r.cmp === 'low'){
       ranks = rankRow(state.plans.map(p => parseCost(p.values[r.key])));
@@ -556,8 +595,16 @@ function refresh(){
       tr.classList.toggle('hidden', vals.every(v => v === vals[0]));
     } else tr.classList.remove('hidden');
   });
-  grid.querySelectorAll('th.planhead').forEach((th,i) => {
-    th.querySelector('.wins').textContent = state.plans.length > 1 && wins[i] ? `🏆 Mejor en ${wins[i]} ${wins[i]===1?'categoría':'categorías'}` : '';
+  // costo estimado de la pestaña Análisis, para conectar las dos pestañas
+  const at = state.plans.length > 1 ? analysisTotals() : null;
+  const atMin = at ? Math.min(...at.totals) : 0;
+  grid.querySelectorAll('th.planhead').forEach((th, i) => {
+    const el = th.querySelector('.wins');
+    if (!at){ el.textContent = ''; el.className = 'wins'; return; }
+    const t = at.totals[i], top = Math.abs(t - atMin) < 0.5;
+    el.className = 'wins' + (top ? ' top' : '');
+    el.textContent = `${top ? '🏆 ' : ''}${at.label}: ${money0(t)}`;
+    el.title = 'Costo estimado (pestaña Análisis)';
   });
   renderResults();
 }
@@ -578,26 +625,45 @@ grid.addEventListener('input', e => {
   const td = t.closest('td.cell');
   if (!td) return;
   state.plans[+td.dataset.plan].values[t.dataset.key] = t.value;
+  if (t.tagName === 'INPUT') t.classList.toggle('long', t.value.length > 14);
   save(); refresh();
 });
 
 grid.addEventListener('click', e => {
+  const sec = e.target.closest('tr.section');
+  if (sec){ toggleSection(sec.dataset.sec); return; }
   const b = e.target.closest('button');
   if (!b) return;
   if (b.id === 'btnAdd'){ openMenu(b); return; }
   const head = b.closest('th.planhead');
-  if (!head) return;
-  const i = +head.dataset.plan, P = state.plans, pg = state.profile.preg;
+  if (head && b.dataset.act === 'more') openPlanMenu(b, +head.dataset.plan);
+});
+function planAction(i, act){
+  const P = state.plans, pg = state.profile.preg;
+  if (!P[i]) return;
   const curPlan = pg.current === '' ? null : P[+pg.current];
-  switch (b.dataset.act){
-    case 'dup':   P.splice(i+1, 0, newPlan(P[i])); break;
+  switch (act){
+    case 'dup':   P.splice(i+1, 0, newPlan(P[i])); manualMode = true; break;
     case 'del':   if (!confirmDelete(P[i])) return; P.splice(i, 1); break;
-    case 'left':  [P[i-1], P[i]] = [P[i], P[i-1]]; break;
-    case 'right': [P[i+1], P[i]] = [P[i], P[i+1]]; break;
+    case 'left':  if (i > 0) [P[i-1], P[i]] = [P[i], P[i-1]]; break;
+    case 'right': if (i < P.length - 1) [P[i+1], P[i]] = [P[i], P[i+1]]; break;
   }
   pg.current = curPlan && P.includes(curPlan) ? String(P.indexOf(curPlan)) : '';
   save(); render();
-});
+}
+// secciones de la tabla que se pueden plegar
+const DEFAULT_CLOSED = ['Salud mental y adicciones', 'Otros'];
+let secOpen = {};
+try { secOpen = JSON.parse(localStorage.getItem('ic-secs')) || {}; } catch(e){}
+function isSecOpen(t){ return secOpen[t] ?? !DEFAULT_CLOSED.includes(t); }
+function toggleSection(t){ secOpen[t] = !isSecOpen(t); try { localStorage.setItem('ic-secs', JSON.stringify(secOpen)); } catch(e){} render(); }
+function orderedSections(){
+  if (state.profile.status !== 'pregnant') return SECTIONS;
+  const arr = SECTIONS.slice(), i = arr.findIndex(x => x.title === 'Embarazo y parto');
+  if (i > 1){ const [x] = arr.splice(i, 1); arr.splice(1, 0, x); }
+  return arr;
+}
+let manualMode = false;
 function confirmDelete(p){
   const hasData = p.name || Object.values(p.values).some(v => v);
   return !hasData || window.confirm(`¿Eliminar "${p.name || 'este plan'}"?`);
@@ -610,6 +676,23 @@ function openMenu(anchor){
     const i = state.plans.indexOf(p);
     h += `<button data-copy="${i}">⧉ Plan ${i+1}: ${esc(p.name || 'Sin nombre')}${i===state.plans.length-1?' <small style="color:var(--muted)">(anterior)</small>':''}</button>`;
   });
+  showMenuAt(anchor, h);
+}
+function openPlanMenu(anchor, i){
+  const n = state.plans.length;
+  let h = `<h4>Plan ${i + 1}</h4>`;
+  if (i > 0) h += `<button data-pact="left" data-plan="${i}">◀ Mover a la izquierda</button>`;
+  if (i < n - 1) h += `<button data-pact="right" data-plan="${i}">▶ Mover a la derecha</button>`;
+  h += `<button data-pact="dup" data-plan="${i}">⧉ Duplicar</button>`;
+  if (n > 1) h += `<hr><button class="danger" data-pact="del" data-plan="${i}">✕ Eliminar plan</button>`;
+  showMenuAt(anchor, h);
+}
+function openMoreMenu(anchor){
+  showMenuAt(anchor, `<button data-tool="btnExample">📋 Cargar ejemplo</button><button data-tool="btnExport">⬇️ Exportar (archivo JSON)</button>
+    <button data-tool="btnImport">⬆️ Importar (archivo JSON)</button><button data-tool="btnPrint">🖨️ Imprimir / guardar PDF</button>
+    <hr><button class="danger" data-tool="btnReset">🗑️ Limpiar todo</button>`);
+}
+function showMenuAt(anchor, h){
   menu.innerHTML = h;
   menu.hidden = false;
   const r = anchor.getBoundingClientRect(), mw = menu.offsetWidth, mh = menu.offsetHeight;
@@ -617,8 +700,13 @@ function openMenu(anchor){
   menu.style.top = Math.min(r.bottom + 6, innerHeight - mh - 16) + 'px';
 }
 menu.addEventListener('click', e => {
+  const pa = e.target.closest('button[data-pact]');
+  if (pa){ menu.hidden = true; planAction(+pa.dataset.plan, pa.dataset.pact); return; }
+  const tl = e.target.closest('button[data-tool]');
+  if (tl){ menu.hidden = true; document.getElementById(tl.dataset.tool).click(); return; }
   const b = e.target.closest('button[data-copy]');
   if (!b) return;
+  manualMode = true;
   const i = +b.dataset.copy;
   state.plans.push(newPlan(i >= 0 ? state.plans[i] : null));
   menu.hidden = true; save(); render();
@@ -629,6 +717,9 @@ menu.addEventListener('click', e => {
   heads[heads.length-1].select();
 });
 document.getElementById('btnAddTop').addEventListener('click', e => openMenu(e.currentTarget));
+document.getElementById('btnMore').addEventListener('click', e => openMoreMenu(e.currentTarget));
+document.getElementById('btnEmptyExample').addEventListener('click', () => document.getElementById('btnExample').click());
+document.getElementById('btnEmptyManual').addEventListener('click', () => { manualMode = true; render(); });
 document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && !e.target.closest('.addtrigger')) menu.hidden = true; });
 // iOS hace zoom al tocar campos con letra < 16px; esto lo evita (iOS sigue permitiendo pellizcar para zoom)
 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.querySelector('meta[name=viewport]').content = 'width=device-width, initial-scale=1, maximum-scale=1';
@@ -941,14 +1032,14 @@ pform.addEventListener('click', e => {
 
 /* ---- resultados ---- */
 const POINTS = {
-  normal: `<div class="box"><h3>★ Puntos a mirar (situación normal)</h3><ol>
+  normal: `<details class="box"><summary>💡 Qué mirar al comparar (uso normal)</summary><ol>
     <li><b>Pago mensual × 12</b>: es lo único que pagas seguro.</li>
     <li><b>Copagos de médico y especialista</b> × las veces que vas al año.</li>
     <li><b>Medicamentos</b> que tomas: genéricos vs. de marca y el deducible de medicinas.</li>
     <li><b>Deducible y coaseguro</b>: importan para todo lo que dice "después del deducible" (hospital, emergencias, MRI).</li>
     <li><b>Máximo de bolsillo</b>: tu peor caso en un año malo.</li>
-    <li><b>Red</b>: que tus médicos estén en la red (HMO solo cubre la red).</li></ol></div>`,
-  pregnant: `<div class="box"><h3>★ Puntos a mirar (embarazo)</h3><ol>
+    <li><b>Red</b>: que tus médicos estén en la red (HMO solo cubre la red).</li></ol></details>`,
+  pregnant: `<details class="box"><summary>💡 Qué mirar al comparar (embarazo)</summary><ol>
     <li><b>Costo del parto</b> = médico + hospital. Compara copagos fijos (ej. $350 + $3,000) contra "50% después del deducible".</li>
     <li><b>Deducible y coaseguro</b>: si el parto va "sujeto a deducible", pagas el deducible completo y luego el %.</li>
     <li><b>Máximo de bolsillo</b>: tu techo si hay cesárea, complicaciones o NICU.</li>
@@ -957,7 +1048,7 @@ const POINTS = {
     <li><b>Ejemplo "Peg is Having a Baby"</b> (última página del Summary of Benefits): es el costo oficial de un embarazo con parto en ese plan.</li>
     <li><b>Red</b>: que tu obstetra y el hospital donde quieres dar a luz estén en la red.</li>
     <li><b>El bebé</b>: tendrá su propio deducible y máximo; revisa "Well baby care" y el pediatra.</li>
-    <li><b>Medicaid</b>: si los ingresos del hogar son bajos, una embarazada puede calificar para Medicaid en Florida (pregunta en ACCESS Florida o a tu agente).</li></ol></div>`,
+    <li><b>Medicaid</b>: si los ingresos del hogar son bajos, una embarazada puede calificar para Medicaid en Florida (pregunta en ACCESS Florida o a tu agente).</li></ol></details>`,
 };
 function dataWarnings(infos){
   const miss = [], assumed = [];
@@ -973,9 +1064,23 @@ function dataWarnings(infos){
   if (assumed.length) w += `<li>Coaseguro vacío en <b>${assumed.map(esc).join(', ')}</b>: se asumió ${DEFAULT_COINS*100}%.</li>`;
   return w;
 }
+function analysisTotals(){
+  if (state.plans.every(isBlank)) return null;
+  if (state.profile.status === 'pregnant'){
+    const g = pregTimeline();
+    if (!g || g.error) return null;
+    return { label: 'Embarazo', totals: state.plans.map(p => stint(p, g.months, 0, g.months.length).total) };
+  }
+  return { label: 'Año', totals: state.plans.map(p => normalCost(p).total) };
+}
 function renderResults(){
   const box = document.getElementById('presults');
   if (!box) return;
+  if (state.plans.every(isBlank)){
+    box.innerHTML = `<div class="empty">Aún no tienes planes para analizar. Ve a <b>📥 Cargar planes</b> y súbelos con foto o PDF, o carga el ejemplo.</div>`;
+    renderPriorities();
+    return;
+  }
   box.innerHTML = state.profile.status === 'pregnant' ? pregHTML() : normalHTML();
   renderPriorities();
 }
@@ -1027,30 +1132,35 @@ function renderPriorities(){
   const box = document.getElementById('prioBody');
   if (!box) return;
   const W = currentWeights(), custom = !!state.profile.weights, n = state.plans.length;
+  const sum = document.getElementById('prioSum');
   let h = '';
+  sum.innerHTML = '⭐ Lo que más me importa';
   // ranking
-  if (n < 2) h += `<div class="box">Agrega al menos 2 planes en <b>📥 Cargar planes</b> para ordenarlos según tus prioridades.</div>`;
+  if (state.plans.every(isBlank)) h += `<div class="empty">Aún no tienes planes.</div>`;
+  else if (n < 2) h += `<div class="box">Agrega al menos 2 planes en <b>📥 Cargar planes</b> para ordenarlos según tus prioridades.</div>`;
   else {
     const sc = priorityScores().sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
     const top = sc[0].score;
+    if (top != null) sum.innerHTML = `⭐ Lo que más me importa <small>· 1º ${esc(state.plans[sc[0].i].name || 'Plan ' + (sc[0].i + 1))} (${top} pts)</small>`;
     h += `<div class="rank">${sc.map((r, pos) => `<div class="rk${r.score != null && r.score === top ? ' best' : ''}">
       <span class="pos">${pos + 1}</span>
-      <div class="rk-main"><div class="rk-name">${r.score != null && r.score === top ? '🏆 ' : ''}${r.i + 1}. ${esc(state.plans[r.i].name || 'Plan ' + (r.i + 1))}</div>
+      <div class="rk-main"><div class="rk-name">${r.score != null && r.score === top ? '🏆 ' : ''}${r.i + 1}. ${esc(state.plans[r.i].name || 'Plan ' + (r.i + 1))} <small>${premTag(r.i)}</small></div>
         <div class="rk-bar"><i style="width:${r.score ?? 0}%"></i></div>
         <div class="rk-sub">${r.wins.length ? 'Mejor en: ' + r.wins.slice(0, 4).map(k => esc(rowLabel(k))).join(', ') + (r.wins.length > 4 ? '…' : '') : 'No es el mejor en ninguno de tus pagos importantes'}${r.missing.length ? ` · <span class="wmsg">sin dato: ${r.missing.slice(0, 3).map(k => esc(rowLabel(k))).join(', ')}${r.missing.length > 3 ? '…' : ''}</span>` : ''}</div></div>
       <span class="rk-score">${r.score ?? '—'}</span></div>`).join('')}</div>
       <p class="muted" style="margin:6px 0 0">Puntaje de 0 a 100: 100 = el más barato en todo lo que marcaste. Los copagos y "% después del deducible" se comparan en dólares con precios estimados de cada servicio.</p>`;
   }
-  // atajos
+  // atajos y fichas, dentro de un desplegable
+  h += `<details class="adj" open><summary>Ajustar importancia</summary>`;
   h += `<div><p class="muted" style="margin:4px 0 6px">Toca cada pago para darle importancia: <b>☆</b> no cuenta · <b>★</b> poco · <b>★★</b> importante · <b>★★★</b> muy importante.${custom ? '' : ' Ahora se usa el atajo de tu situación.'}</p>
     <div class="presets">${PRESET_LABELS.map(([k, t]) => `<button class="btn" data-preset="${k}">${t}</button>`).join('')}<button class="btn" data-preset="none">Borrar todo</button></div></div>`;
   // fichas por sección
-  h += SECTIONS.map(sec => {
+  h += orderedSections().map(sec => {
     const keys = sec.rows.map(r => r.key).filter(k => PRIORITY_KEYS.includes(k));
     if (!keys.length) return '';
     return `<div class="pgroup"><h4>${esc(sec.title)}</h4><div class="chips">${keys.map(k => { const w = W[k] || 0;
       return `<button class="chip-p w${w}" data-k="${k}" aria-label="${esc(rowLabel(k))}: importancia ${w} de 3">${esc(rowLabel(k))} <b>${w ? '★'.repeat(w) : '☆'}</b></button>`; }).join('')}</div></div>`;
-  }).join('');
+  }).join('') + `</details>`;
   box.innerHTML = h;
 }
 document.getElementById('prioBody').addEventListener('click', e => {
@@ -1065,14 +1175,29 @@ document.getElementById('prioBody').addEventListener('click', e => {
   } else return;
   save(); render();
 });
+function premTag(i){
+  const c = parseCost(state.plans[i].values.premium);
+  return c && c.kind !== 'pct' && isFinite(c.n) ? '$' + c.n.toFixed(2).replace(/\.00$/, '') + '/mes' : 'sin prima';
+}
 function kpiHTML(totals, sub){
-  const min = Math.min(...totals);
-  return `<div class="kpis">${totals.map((t, i) => `<div class="kpi${state.plans.length > 1 && t === min ? ' best' : ''}">
-    <div class="t">${state.plans.length > 1 && t === min ? '🏆 ' : ''}${i+1}. ${esc(state.plans[i].name || 'Plan ' + (i+1))}</div><div class="v">${money0(t)}</div><div class="s">${sub(i)}</div></div>`).join('')}</div>`;
+  const n = state.plans.length, min = Math.min(...totals);
+  const order = totals.map((_, i) => i).sort((a, b) => totals[a] - totals[b]);
+  return `<div class="kpis">${order.map(i => { const t = totals[i], best = n > 1 && Math.abs(t - min) < 0.5;
+    return `<div class="kpi${best ? ' best' : ''}"><div class="t">${best ? '🏆 ' : ''}${i+1}. ${esc(state.plans[i].name || 'Plan ' + (i+1))} <small>${premTag(i)}</small></div>
+      <div class="v">${money0(t)}</div><div class="s">${sub(i)}${!best && n > 1 ? ` · <b>+${money0(t - min)}</b> vs. el mejor` : ''}</div></div>`; }).join('')}</div>`;
+}
+function verdictHTML(totals, what){
+  if (state.plans.length < 2) return '';
+  const order = totals.map((t, i) => [t, i]).sort((a, b) => a[0] - b[0]);
+  const [t1, i1] = order[0], t2 = order[1][0];
+  return `<div class="verdict"><div class="vt">🏆 ${esc(planName(i1))} <small>${premTag(i1)}</small></div>
+    <div class="vv">${money0(t1)} <span>${what}</span></div>
+    <div class="vs">${t2 - t1 >= 1 ? `<b>${money0(t2 - t1)}</b> menos que el 2º más barato` : 'Empata con el 2º más barato'}</div></div>`;
 }
 function normalHTML(){
   const res = state.plans.map(normalCost);
-  let h = `<h3 style="margin:0 0 8px;font-size:.95rem">Lo que te sale del bolsillo en un año (prima + copagos)</h3>`;
+  let h = verdictHTML(res.map(r => r.total), 'al año (prima + copagos)');
+  h += `<h3 class="sub3">Todos los planes: lo que te sale del bolsillo en un año</h3>`;
   h += kpiHTML(res.map(r => r.total), i => `Prima ${money0(res[i].prem)} + médicos ${money0(res[i].med)}`);
   if (state.plans.length > 1){
     const nums = state.plans.map(planNums);
@@ -1093,7 +1218,7 @@ function normalHTML(){
     if (lines) h += `<div class="strategy" style="margin-top:12px"><h3>⚖️ Punto de equilibrio</h3>${lines}</div>`;
   }
   const w = dataWarnings(res.map(r => r.info));
-  h += `<div class="notes" style="margin-top:12px">${POINTS.normal}${w ? `<div class="box warn"><h3>⚠ Ten en cuenta</h3><ul>${w}</ul></div>` : ''}</div>`;
+  h += `<div class="notes" style="margin-top:12px">${w ? `<div class="box warn"><h3>⚠ Faltan datos</h3><ul>${w}</ul></div>` : ''}${POINTS.normal}</div>`;
   return h;
 }
 function pregHTML(){
@@ -1127,17 +1252,20 @@ function pregHTML(){
   const weekTxt = g.week < 0 ? 'aún no empieza' : `semana <b>${g.week}</b>`;
 
   let h = `<p class="status" style="margin:0 0 10px">🤰 Hoy: ${weekTxt} · Parto estimado: <b>${fmtDate(g.due)}</b> · faltan <b>${Math.max(0, birthIdx)}</b> ${birthIdx === 1 ? 'mes' : 'meses'}</p>`;
-  h += `<h3 style="margin:0 0 8px;font-size:.95rem">Lo que te sale del bolsillo desde hoy hasta la consulta postparto (prima + gastos)</h3>`;
-  h += kpiHTML(totals, i => `Prima ${money0(planNums(state.plans[i]).premium * M)} + médicos ${money0(totals[i] - planNums(state.plans[i]).premium * M)}`);
+  h += verdictHTML(totals, 'hasta la consulta postparto, quedándote en este plan');
   if (n > 1){
-    h += `<div class="notes" style="margin-top:12px">${anyMode
-      ? stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambiando de plan cuando convenga)</span>') + stratHTML(alt, '📅 Si solo pudieras cambiar el 1 de enero y después del parto')
-      : stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambios solo el 1 de enero y después del parto)</span>') + stratHTML(alt, '🧪 Si pudieras cambiar en cualquier mes')}</div>`;
+    const same = Math.abs(real.total - alt.total) < 0.5 && real.segs.length === alt.segs.length && real.segs.every((sg, k) => sg.k === alt.segs[k].k && sg.s === alt.segs[k].s);
+    h += same ? stratHTML(real, '✅ Mejor estrategia <span class="muted">(puedas o no cambiar de plan)</span>')
+      : `<div class="notes">${anyMode
+        ? stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambiando de plan cuando convenga)</span>') + stratHTML(alt, '📅 Si solo pudieras cambiar el 1 de enero y después del parto')
+        : stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambios solo el 1 de enero y después del parto)</span>') + stratHTML(alt, '🧪 Si pudieras cambiar en cualquier mes')}</div>`;
   }
+  h += `<h3 class="sub3">Todos los planes: desde hoy hasta la consulta postparto</h3>`;
+  h += kpiHTML(totals, i => `Prima ${money0(planNums(state.plans[i]).premium * M)} + médicos ${money0(totals[i] - planNums(state.plans[i]).premium * M)}`);
   // tabla mes a mes
-  h += `<div class="tl" style="margin-top:12px"><table><thead><tr><th>Mes</th><th>Semanas</th><th>Consultas ✎</th><th>Eco ✎</th><th>Análisis ✎</th><th style="text-align:left">Carga</th>`;
-  state.plans.forEach((_, i) => { const nm = state.plans[i].name || 'Plan ' + (i+1); h += `<th title="${esc(nm)}">${i+1}. ${esc(nm.length > 14 ? nm.slice(0, 13) + '…' : nm)}</th>`; });
-  h += `</tr></thead><tbody>`;
+  h += `<h3 class="sub3">Mes a mes</h3><div class="tl"><table><thead><tr><th>Mes</th>`;
+  state.plans.forEach((_, i) => { const nm = state.plans[i].name || 'Plan ' + (i+1); h += `<th title="${esc(nm)}">P${i+1}<small>${premTag(i)}</small></th>`; });
+  h += `<th>Consultas ✎</th><th>Eco ✎</th><th>Análisis ✎</th><th class="c-hide">Semanas</th><th class="c-hide" style="text-align:left">Carga</th></tr></thead><tbody>`;
   months.forEach((m, i) => {
     const cnt = t => m.events.filter(e => t.includes(e.type)).length;
     const consults = cnt(['ob','mfm','post']), load = m.events.filter(e => e.type !== 'birth').length;
@@ -1145,15 +1273,15 @@ function pregHTML(){
     const mk = `${m.y}-${m.m + 1}`, o = (P.overrides || {})[mk] || {};
     const inp = (t, v, lbl) => `<td><input class="cnt${o[t] != null ? ' edited' : ''}" type="number" min="0" max="60" step="1" inputmode="numeric" data-mk="${mk}" data-t="${t}" value="${v}" aria-label="${lbl} en ${monthName(m.date)}"></td>`;
     const vals = singles.map(s => s.per[i]), mn = Math.min(...vals), allEq = vals.every(v => Math.abs(v - vals[0]) < 0.5);
-    h += `<tr class="${isBirth ? 'birth' : ''}"><td>${monthName(m.date)}${isBirth ? ' 👶 Parto' : ''}${m.m === 0 && i > 0 ? ' 🔄' : ''}</td>
-      <td>${m.w1 > 42 ? 'postparto' : `${m.w1}–${Math.min(m.w2, 46)}`}</td>${inp('consults', consults, 'Consultas')}${inp('us', cnt(['us']), 'Ecografías')}${inp('lab', cnt(['lab']), 'Análisis')}
-      <td style="text-align:left"><span class="bar" style="width:${Math.round(load / maxLoad * 60)}px"></span></td>`;
+    h += `<tr class="${isBirth ? 'birth' : ''}"><td>${monthName(m.date)}${isBirth ? ' 👶' : ''}${m.m === 0 && i > 0 ? ' 🔄' : ''}</td>`;
     vals.forEach((v, k) => h += `<td class="${n > 1 && !allEq && Math.abs(v - mn) < 0.5 ? 'best' : ''}">${money0(v)}${n > 1 && pick.get(i) === k ? ' ✓' : ''}</td>`);
-    h += `</tr>`;
+    h += `${inp('consults', consults, 'Consultas')}${inp('us', cnt(['us']), 'Ecografías')}${inp('lab', cnt(['lab']), 'Análisis')}
+      <td class="c-hide">${m.w1 > 42 ? 'postparto' : `${m.w1}–${Math.min(m.w2, 46)}`}</td>
+      <td class="c-hide" style="text-align:left"><span class="bar" style="width:${Math.round(load / maxLoad * 60)}px"></span></td></tr>`;
   });
-  h += `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td></td>${totals.map((t, k) => `<td class="${n > 1 && k === bestSingle ? 'best' : ''}">${money0(t)}</td>`).join('')}</tr></tbody></table></div>`;
+  h += `<tr class="total"><td>Total</td>${totals.map((t, k) => `<td class="${n > 1 && k === bestSingle ? 'best' : ''}">${money0(t)}</td>`).join('')}<td></td><td></td><td></td><td class="c-hide"></td><td class="c-hide"></td></tr></tbody></table></div>`;
   const nEdits = Object.keys(P.overrides || {}).length;
-  h += `<p class="muted" style="margin:6px 0 0">✎ Puedes cambiar las consultas, ecos y análisis de cada mes${nEdits ? ` (en amarillo los que cambiaste) <button class="btn" id="ovReset" style="padding:2px 8px;font-size:.78rem">↺ Volver al calendario estándar</button>` : ''}.<br>Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
+  h += `<p class="muted" style="margin:6px 0 0">✎ Puedes cambiar las consultas, ecos y análisis de cada mes${nEdits ? ` (en amarillo los que cambiaste) <button class="btn" id="ovReset" style="padding:2px 8px;font-size:.78rem">↺ Volver al calendario estándar</button>` : ''}.<br>P1, P2… = número del plan · Verde = más barato ese mes · ✓ = plan de la mejor estrategia · 👶 = parto · 🔄 = 1 de enero (deducible y máximo vuelven a cero).</p>`;
 
   // advertencias
   const birthYear = g.due.getFullYear(), crosses = months.slice(0, birthIdx + 1).some(m => m.y !== today.getFullYear());
@@ -1169,8 +1297,9 @@ function pregHTML(){
   if (crosses) w += `<li>El embarazo cruza el 1 de enero: el deducible y el máximo de bolsillo vuelven a empezar en ${today.getFullYear() + 1}.</li>`;
   w += `<li>Cambiar de plan también reinicia el deducible y el máximo de bolsillo.</li>`;
   w += `<li>Los precios de hospital y médico son estimados; ajústalos en "Precios estimados". Pregunta al seguro cuánto cuesta el parto en tu hospital.</li>`;
-  w += dataWarnings(singles.map(s => s.info));
-  h += `<div class="notes" style="margin-top:12px"><div class="box warn"><h3>⚠ Ten en cuenta</h3><ul>${w}</ul></div>${POINTS.pregnant}</div>`;
+  const dw = dataWarnings(singles.map(s => s.info));
+  h += `<div class="notes" style="margin-top:12px">${dw ? `<div class="box warn"><h3>⚠ Faltan datos</h3><ul>${dw}</ul></div>` : ''}
+    <details class="box warn"><summary>ℹ️ Ten en cuenta: cambios de plan, 1 de enero y precios</summary><ul>${w}</ul></details>${POINTS.pregnant}</div>`;
   return h;
 }
 
