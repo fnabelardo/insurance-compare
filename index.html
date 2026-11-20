@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparador de Seguros</title>
+<meta name="description" content="Compara planes de seguro médico lado a lado: prima mensual, deducible, out-of-pocket, visitas y más.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩺</text></svg>">
+<style>
+:root{
+  --bg:#f4f6fa; --surface:#ffffff; --surface-2:#eef2f8; --border:#d9e0ea;
+  --text:#1b2430; --muted:#5d6b7e; --accent:#0b6bcb; --accent-ink:#ffffff;
+  --best-bg:#e3f6ea; --best-ink:#136c36; --worst-bg:#fdecec; --worst-ink:#a32020;
+  --section:#dfe7f2; --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 16px rgba(16,24,40,.06);
+  --label-w:230px; --col-w:240px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141b; --surface:#171e28; --surface-2:#1d2632; --border:#2c3746;
+    --text:#e6ebf2; --muted:#9aa8ba; --accent:#4ea3ff; --accent-ink:#06121f;
+    --best-bg:#123522; --best-ink:#7fe0a4; --worst-bg:#3a1818; --worst-ink:#ff9d9d;
+    --section:#223043; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --surface:#171e28; --surface-2:#1d2632; --border:#2c3746;
+  --text:#e6ebf2; --muted:#9aa8ba; --accent:#4ea3ff; --accent-ink:#06121f;
+  --best-bg:#123522; --best-ink:#7fe0a4; --worst-bg:#3a1818; --worst-ink:#ff9d9d;
+  --section:#223043; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header.top{max-width:1400px;margin:0 auto;padding:20px 16px 8px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:7px 12px;border-radius:8px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.toggle{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:.9rem;user-select:none}
+.legend{max-width:1400px;margin:0 auto;padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.85rem}
+.chip{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.chip.best{background:var(--best-bg);border:1px solid var(--best-ink)}
+.chip.worst{background:var(--worst-bg);border:1px solid var(--worst-ink)}
+
+main{max-width:1400px;margin:0 auto;padding:0 16px 40px}
+.wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+table{border-collapse:separate;border-spacing:0;min-width:100%}
+th,td{border-bottom:1px solid var(--border);padding:0;vertical-align:middle}
+.lbl{position:sticky;left:0;z-index:2;background:var(--surface);width:var(--label-w);min-width:var(--label-w);max-width:var(--label-w);padding:8px 12px;text-align:left;font-weight:600;font-size:.9rem;border-right:1px solid var(--border)}
+.lbl small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+td.cell{width:var(--col-w);min-width:var(--col-w);border-right:1px solid var(--border);transition:background .15s}
+td.cell input,td.cell select,td.cell textarea{width:100%;border:0;background:transparent;color:inherit;font:inherit;padding:9px 12px;outline:none}
+td.cell textarea{resize:vertical;min-height:60px}
+td.cell input:focus,td.cell select:focus,td.cell textarea:focus{box-shadow:inset 0 0 0 2px var(--accent);border-radius:4px}
+td.cell select option{background:var(--surface);color:var(--text)}
+td.best{background:var(--best-bg)} td.best input{color:var(--best-ink);font-weight:600}
+td.worst{background:var(--worst-bg)} td.worst input{color:var(--worst-ink)}
+td.calc{padding:9px 12px;font-weight:600;font-variant-numeric:tabular-nums}
+td.calc.best{color:var(--best-ink)} td.calc.worst{color:var(--worst-ink)}
+td.addcol{min-width:70px;width:70px;border-bottom-color:transparent}
+tr.section th{position:sticky;left:0;background:var(--section);text-align:left;padding:7px 12px;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text)}
+tr.section td{background:var(--section)}
+tr.section th span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);margin-left:6px}
+tr.row:nth-child(even) .lbl{background:var(--surface-2)}
+tr.row:nth-child(even) td.cell:not(.best):not(.worst){background:var(--surface-2)}
+tr.row.hidden{display:none}
+
+thead th{position:sticky;top:0;z-index:3;background:var(--surface);border-bottom:2px solid var(--border)}
+thead th.lbl{z-index:4;vertical-align:bottom;color:var(--muted);font-size:.8rem;font-weight:500}
+.planhead{width:var(--col-w);min-width:var(--col-w);padding:10px 10px 8px;border-right:1px solid var(--border);text-align:left;vertical-align:top}
+.planhead .num{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+.planhead input{width:100%;border:1px solid transparent;border-radius:6px;background:transparent;color:inherit;font:inherit;padding:4px 6px;margin-left:-6px}
+.planhead input:hover{border-color:var(--border)}
+.planhead input:focus{outline:none;border-color:var(--accent)}
+.planhead input.name{font-weight:700;color:var(--accent);font-size:1rem}
+.planhead input.carrier{font-size:.82rem;color:var(--muted)}
+.planhead .actions{display:flex;gap:4px}
+.icon{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:6px;width:26px;height:26px;display:inline-grid;place-items:center;padding:0;font-size:13px}
+.icon:hover{color:var(--accent);border-color:var(--accent)}
+.icon.del:hover{color:var(--worst-ink);border-color:var(--worst-ink)}
+.wins{margin-top:6px;font-size:.78rem;color:var(--best-ink);min-height:1em}
+th.addhead{width:70px;min-width:70px;vertical-align:middle;text-align:center;position:sticky;top:0}
+.plus{width:44px;height:44px;border-radius:50%;border:2px dashed var(--accent);background:transparent;color:var(--accent);font-size:26px;line-height:1;display:grid;place-items:center;margin:auto}
+.plus:hover{background:var(--accent);color:var(--accent-ink);border-style:solid}
+
+.menu{position:fixed;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:6px;min-width:240px;max-width:calc(100vw - 32px)}
+.menu[hidden]{display:none}
+.menu h4{margin:4px 8px 6px;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--text);padding:8px 10px;border-radius:6px}
+.menu button:hover{background:var(--surface-2)}
+.menu hr{border:0;border-top:1px solid var(--border);margin:6px 0}
+footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);font-size:.8rem}
+
+@media (max-width:640px){
+  :root{--label-w:140px;--col-w:190px}
+  h1{font-size:1.25rem}
+  .lbl{font-size:.82rem;padding:8px}
+}
+@media print{
+  .toolbar,.legend,th.addhead,td.addcol,.planhead .actions,footer,.menu{display:none!important}
+  body{background:#fff;color:#000}
+  .wrap{overflow:visible;box-shadow:none;border:0}
+  thead th{position:static}
+  td.cell input{padding:5px 8px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>🩺 Comparador de Seguros Médicos</h1>
+    <p class="sub">Agrega planes con <b>+</b>, copia datos del plan anterior y compara lado a lado.</p>
+  </div>
+  <div class="toolbar">
+    <label class="toggle"><input type="checkbox" id="onlyDiff"> Solo diferencias</label>
+    <button class="btn" id="btnExample">Cargar ejemplo</button>
+    <button class="btn" id="btnExport">Exportar</button>
+    <button class="btn" id="btnImport">Importar</button>
+    <button class="btn" id="btnPrint">Imprimir / PDF</button>
+    <button class="btn" id="btnReset">Limpiar todo</button>
+    <input type="file" id="fileImport" accept="application/json,.json" hidden>
+  </div>
+</header>
+<div class="legend">
+  <span><i class="chip best"></i>Mejor valor (más bajo)</span>
+  <span><i class="chip worst"></i>Peor valor (más alto / precio completo)</span>
+  <span>Los datos se guardan automáticamente en este navegador.</span>
+</div>
+<main>
+  <div class="wrap"><table id="grid"></table></div>
+</main>
+<footer>Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code> o <code>30%</code>. "Full price" / "Precio completo" cuenta como el peor valor.</footer>
+
+<div class="menu" id="addMenu" hidden></div>
+
+<script>
+const SECTIONS = [
+  { title: 'Resumen de costos', rows: [
+    { key:'premium',    label:'Pago mensual', hint:'Monthly premium', cmp:'low' },
+    { key:'premiumWas', label:'Precio sin subsidio', hint:'"was" / antes del crédito fiscal', cmp:'none' },
+    { key:'deductible', label:'Deducible', hint:'Deductible', cmp:'low' },
+    { key:'drugDed',    label:'Deducible de medicinas', hint:'Drug deductible', cmp:'low' },
+    { key:'oop',        label:'Máximo de bolsillo', hint:'Out-of-pocket max', cmp:'low' },
+    { key:'_annual',    label:'Prima anual', hint:'Pago mensual × 12', calc:'annual' },
+    { key:'_worst',     label:'Peor caso anual', hint:'Prima anual + Out-of-pocket', calc:'worst' },
+  ]},
+  { title: 'Detalles del plan', rows: [
+    { key:'network', label:'Red', hint:'Network', type:'select', options:['','HMO','PPO','EPO','POS','Otro'] },
+    { key:'tier',    label:'Nivel metálico', hint:'Metal tier', type:'select', options:['','Catastrophic','Bronze','Expanded Bronze','Silver','Gold','Platinum'] },
+    { key:'rating',  label:'Calificación', hint:'Overall rating', cmp:'none' },
+  ]},
+  { title: 'Visitas médicas', note:'Antes del deducible', rows: [
+    { key:'pcp',        label:'Médico primario', hint:'Primary care visit', cmp:'low' },
+    { key:'specialist', label:'Especialista', hint:'Specialist visit', cmp:'low' },
+    { key:'preventive', label:'Cuidado preventivo', hint:'Preventive care visit', cmp:'low' },
+  ]},
+  { title: 'Medicamentos', rows: [
+    { key:'generic',   label:'Genéricos', hint:'Generic', cmp:'low' },
+    { key:'brand',     label:'De marca', hint:'Brand', cmp:'low' },
+    { key:'nonpref',   label:'Marca no preferida', hint:'Non-preferred brand', cmp:'low' },
+    { key:'specialty', label:'Especialidad', hint:'Specialty', cmp:'low' },
+  ]},
+  { title: 'Laboratorios e imágenes', rows: [
+    { key:'xray',    label:'Rayos X', hint:'X-rays', cmp:'low' },
+    { key:'imaging', label:'Imágenes (CT/PET/MRI)', hint:'Imaging', cmp:'low' },
+    { key:'blood',   label:'Análisis de sangre', hint:'Blood work', cmp:'low' },
+  ]},
+  { title: 'Hospital y emergencias', rows: [
+    { key:'urgent',     label:'Urgencias (Urgent care)', hint:'Urgent care', cmp:'low' },
+    { key:'er',         label:'Sala de emergencias', hint:'Emergency room', cmp:'low' },
+    { key:'ambulance',  label:'Ambulancia', hint:'Ambulance', cmp:'low' },
+    { key:'hospFac',    label:'Hospitalización (instalación)', hint:'Hospital stay – facility', cmp:'low' },
+    { key:'hospPhys',   label:'Hospitalización (médico)', hint:'Hospital stay – physician', cmp:'low' },
+    { key:'outFac',     label:'Procedimiento ambulatorio (instalación)', hint:'Outpatient – facility', cmp:'low' },
+    { key:'outPhys',    label:'Procedimiento ambulatorio (médico)', hint:'Outpatient – physician', cmp:'low' },
+    { key:'rehab',      label:'Rehabilitación física', hint:'Physical rehabilitation', cmp:'low' },
+  ]},
+  { title: 'Salud mental y adicciones', rows: [
+    { key:'mhOut',  label:'Servicios ambulatorios', hint:'Outpatient services', cmp:'low' },
+    { key:'mhHosp', label:'Hospitalización psiquiátrica', hint:'Psychiatric hospital stay', cmp:'low' },
+  ]},
+  { title: 'Embarazo y parto', rows: [
+    { key:'wellBaby', label:'Cuidado del bebé sano', hint:'Well baby care', cmp:'low' },
+    { key:'delivery', label:'Parto y hospitalización', hint:'Labor, delivery, hospital stay', cmp:'low' },
+  ]},
+  { title: 'Otros', rows: [
+    { key:'links', label:'Enlaces / documentos', hint:'Summary of benefits, etc.', cmp:'none' },
+    { key:'notes', label:'Notas', hint:'', type:'textarea', cmp:'none' },
+  ]},
+];
+const ROWS = SECTIONS.flatMap(s => s.rows);
+const STORE = 'insurance-compare-v1';
+
+const EXAMPLE = [
+  { name:'Bronze Classic 4700', carrier:'Oscar Health (HMO Florida)', values:{
+    premium:'$140.61', premiumWas:'$2,081.61', deductible:'$4,700', drugDed:'N/A', oop:'$10,150',
+    network:'HMO', tier:'Expanded Bronze', rating:'Not rated',
+    pcp:'$70', specialist:'$125', preventive:'No charge',
+    generic:'$3', brand:'Full price', nonpref:'Full price', specialty:'Full price',
+    xray:'$150', imaging:'Full price', blood:'$70',
+    urgent:'$125', er:'Full price', ambulance:'Full price', hospFac:'Full price', hospPhys:'Full price',
+    outFac:'Full price', outPhys:'Full price', rehab:'$125',
+    mhOut:'$70', mhHosp:'Full price', wellBaby:'No charge', delivery:'Full price' }},
+  { name:'Bronze Elite + PCP Saver Plus', carrier:'Oscar Health (HMO Florida)', values:{
+    premium:'$304.08', premiumWas:'$2,245.08', deductible:'$0', drugDed:'$7,000', oop:'$10,600',
+    network:'HMO', tier:'Expanded Bronze', rating:'Not rated',
+    pcp:'$50', specialist:'$125', preventive:'No charge',
+    generic:'$3', brand:'Full price', nonpref:'Full price', specialty:'Full price',
+    xray:'$150', imaging:'$750', blood:'$65',
+    urgent:'$75', er:'$2500 copay', ambulance:'$2500 copay', hospFac:'$3000 per day', hospPhys:'$350',
+    outFac:'$1200 copay', outPhys:'$350', rehab:'$125',
+    mhOut:'$125', mhHosp:'$3000 per day', wellBaby:'No charge', delivery:'$3000 copay' }},
+];
+
+let uid = 1;
+const newPlan = (from) => ({
+  id: uid++,
+  name: from ? from.name + ' (copia)' : '',
+  carrier: from ? from.carrier : '',
+  values: from ? { ...from.values } : {},
+});
+
+let state = load() || { plans: [newPlan()] };
+
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE));
+    if (s && Array.isArray(s.plans) && s.plans.length){
+      s.plans.forEach(p => { p.id = uid++; p.values = p.values || {}; });
+      return s;
+    }
+  }catch(e){}
+  return null;
+}
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- parsing & comparison ---------- */
+function parseCost(raw){
+  const s = String(raw ?? '').trim().toLowerCase();
+  if (!s || s === 'n/a' || s.startsWith('n/a') || s === '-') return null;
+  if (/(no charge|sin costo|gratis|\bfree\b|cubierto 100|covered 100)/.test(s)) return { kind:'any', n:0 };
+  if (/(full price|precio completo|no cubierto|not covered|100\s*%\s*(coins|coas))/.test(s)) return { kind:'any', n:Infinity };
+  const m = s.replace(/,/g,'').match(/-?\d+(\.\d+)?/);
+  if (!m) return null;
+  return { kind: s.includes('%') ? 'pct' : 'usd', n: parseFloat(m[0]) };
+}
+const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+
+function calcValue(plan, kind){
+  const p = parseCost(plan.values.premium);
+  if (!p || p.kind !== 'usd') return null;
+  const annual = p.n * 12;
+  if (kind === 'annual') return annual;
+  const o = parseCost(plan.values.oop);
+  if (!o || o.kind !== 'usd') return null;
+  return annual + o.n;
+}
+
+function rankRow(values){
+  // values: array of {kind,n}|null -> returns array of 'best'|'worst'|''
+  const parsed = values.map((v,i)=>({v,i})).filter(x => x.v);
+  const out = values.map(()=> '');
+  if (parsed.length < 2) return out;
+  const kinds = new Set(parsed.map(x => x.v.kind).filter(k => k !== 'any'));
+  if (kinds.size > 1) return out;
+  const nums = parsed.map(x => x.v.n);
+  const min = Math.min(...nums), max = Math.max(...nums);
+  if (min === max) return out;
+  parsed.forEach(x => { if (x.v.n === min) out[x.i] = 'best'; else if (x.v.n === max) out[x.i] = 'worst'; });
+  return out;
+}
+
+/* ---------- rendering ---------- */
+const grid = document.getElementById('grid');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function render(){
+  const n = state.plans.length;
+  let h = '<thead><tr><th class="lbl">Plan / Aseguradora</th>';
+  state.plans.forEach((p, i) => {
+    h += `<th class="planhead" data-plan="${i}">
+      <div class="num"><span>Plan ${i+1}</span><span class="actions">
+        ${i>0?`<button class="icon" data-act="left" title="Mover a la izquierda">◀</button>`:''}
+        ${i<n-1?`<button class="icon" data-act="right" title="Mover a la derecha">▶</button>`:''}
+        <button class="icon" data-act="dup" title="Duplicar este plan">⧉</button>
+        ${n>1?`<button class="icon del" data-act="del" title="Eliminar plan">✕</button>`:''}
+      </span></div>
+      <input class="name" data-field="name" placeholder="Nombre del plan" value="${esc(p.name)}">
+      <input class="carrier" data-field="carrier" placeholder="Aseguradora" value="${esc(p.carrier)}">
+      <div class="wins"></div>
+    </th>`;
+  });
+  h += `<th class="addhead"><button class="plus" id="btnAdd" title="Agregar otro seguro" aria-label="Agregar otro seguro">+</button></th></tr></thead><tbody>`;
+
+  SECTIONS.forEach(sec => {
+    h += `<tr class="section"><th>${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</th>${'<td></td>'.repeat(n)}<td class="addcol"></td></tr>`;
+    sec.rows.forEach(r => {
+      h += `<tr class="row" data-key="${r.key}"><th class="lbl">${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
+      state.plans.forEach((p, i) => {
+        if (r.calc){ h += `<td class="cell calc" data-plan="${i}"></td>`; return; }
+        const v = p.values[r.key] ?? '';
+        let input;
+        if (r.type === 'select'){
+          const opts = r.options.includes(v) ? r.options : [...r.options, v];
+          input = `<select data-key="${r.key}">${opts.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select>`;
+        } else if (r.type === 'textarea'){
+          input = `<textarea data-key="${r.key}" placeholder="—">${esc(v)}</textarea>`;
+        } else {
+          input = `<input data-key="${r.key}" value="${esc(v)}" placeholder="—" autocomplete="off">`;
+        }
+        h += `<td class="cell" data-plan="${i}">${input}</td>`;
+      });
+      h += `<td class="addcol"></td></tr>`;
+    });
+  });
+  h += '</tbody>';
+  grid.innerHTML = h;
+  refresh();
+}
+
+function refresh(){
+  const wins = state.plans.map(()=>0);
+  const onlyDiff = document.getElementById('onlyDiff').checked;
+  ROWS.forEach(r => {
+    const tr = grid.querySelector(`tr.row[data-key="${r.key}"]`);
+    const cells = [...tr.querySelectorAll('td.cell')];
+    let ranks = cells.map(()=> '');
+    if (r.calc){
+      const vals = state.plans.map(p => calcValue(p, r.calc));
+      cells.forEach((td,i) => td.textContent = vals[i] == null ? '—' : money(vals[i]));
+      ranks = rankRow(vals.map(v => v == null ? null : { kind:'usd', n:v }));
+    } else if (r.cmp === 'low'){
+      ranks = rankRow(state.plans.map(p => parseCost(p.values[r.key])));
+    }
+    cells.forEach((td,i) => {
+      td.classList.toggle('best', ranks[i] === 'best');
+      td.classList.toggle('worst', ranks[i] === 'worst');
+      if (ranks[i] === 'best' && !r.calc) wins[i]++;
+    });
+    if (onlyDiff && state.plans.length > 1){
+      const vals = state.plans.map(p => r.calc ? calcValue(p, r.calc) : String(p.values[r.key] ?? '').trim().toLowerCase());
+      tr.classList.toggle('hidden', vals.every(v => v === vals[0]));
+    } else tr.classList.remove('hidden');
+  });
+  grid.querySelectorAll('th.planhead').forEach((th,i) => {
+    th.querySelector('.wins').textContent = state.plans.length > 1 && wins[i] ? `🏆 Mejor en ${wins[i]} ${wins[i]===1?'categoría':'categorías'}` : '';
+  });
+}
+
+/* ---------- events ---------- */
+grid.addEventListener('input', e => {
+  const t = e.target;
+  const head = t.closest('th.planhead');
+  if (head){ state.plans[+head.dataset.plan][t.dataset.field] = t.value; save(); return; }
+  const td = t.closest('td.cell');
+  if (!td) return;
+  state.plans[+td.dataset.plan].values[t.dataset.key] = t.value;
+  save(); refresh();
+});
+
+grid.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.id === 'btnAdd'){ openMenu(b); return; }
+  const head = b.closest('th.planhead');
+  if (!head) return;
+  const i = +head.dataset.plan, P = state.plans;
+  switch (b.dataset.act){
+    case 'dup':   P.splice(i+1, 0, newPlan(P[i])); break;
+    case 'del':   if (!confirmDelete(P[i])) return; P.splice(i, 1); break;
+    case 'left':  [P[i-1], P[i]] = [P[i], P[i-1]]; break;
+    case 'right': [P[i+1], P[i]] = [P[i], P[i+1]]; break;
+  }
+  save(); render();
+});
+function confirmDelete(p){
+  const hasData = p.name || Object.values(p.values).some(v => v);
+  return !hasData || window.confirm(`¿Eliminar "${p.name || 'este plan'}"?`);
+}
+
+const menu = document.getElementById('addMenu');
+function openMenu(anchor){
+  let h = `<h4>Agregar seguro</h4><button data-copy="-1">➕ Plan en blanco</button><hr><h4>Copiar datos de…</h4>`;
+  state.plans.slice().reverse().forEach(p => {
+    const i = state.plans.indexOf(p);
+    h += `<button data-copy="${i}">⧉ Plan ${i+1}: ${esc(p.name || 'Sin nombre')}${i===state.plans.length-1?' <small style="color:var(--muted)">(anterior)</small>':''}</button>`;
+  });
+  menu.innerHTML = h;
+  menu.hidden = false;
+  const r = anchor.getBoundingClientRect(), mw = menu.offsetWidth, mh = menu.offsetHeight;
+  menu.style.left = Math.max(16, Math.min(r.right - mw, innerWidth - mw - 16)) + 'px';
+  menu.style.top = Math.min(r.bottom + 6, innerHeight - mh - 16) + 'px';
+}
+menu.addEventListener('click', e => {
+  const b = e.target.closest('button[data-copy]');
+  if (!b) return;
+  const i = +b.dataset.copy;
+  state.plans.push(newPlan(i >= 0 ? state.plans[i] : null));
+  menu.hidden = true; save(); render();
+  const wrap = document.querySelector('.wrap');
+  wrap.scrollTo({ left: wrap.scrollWidth, behavior: 'smooth' });
+  const heads = grid.querySelectorAll('th.planhead input.name');
+  heads[heads.length-1].focus({ preventScroll:true });
+  heads[heads.length-1].select();
+});
+document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && e.target.id !== 'btnAdd') menu.hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') menu.hidden = true; });
+window.addEventListener('resize', () => menu.hidden = true);
+
+document.getElementById('onlyDiff').addEventListener('change', refresh);
+document.getElementById('btnPrint').addEventListener('click', () => window.print());
+document.getElementById('btnExample').addEventListener('click', () => {
+  const hasData = state.plans.some(p => p.name || Object.values(p.values).some(v => v));
+  if (hasData && !window.confirm('Esto reemplaza los planes actuales con el ejemplo. ¿Continuar?')) return;
+  state = { plans: EXAMPLE.map(p => ({ ...newPlan(), name:p.name, carrier:p.carrier, values:{...p.values} })) };
+  save(); render();
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (!window.confirm('¿Borrar todos los planes y empezar de nuevo?')) return;
+  state = { plans: [newPlan()] }; save(); render();
+});
+document.getElementById('btnExport').addEventListener('click', () => {
+  const data = JSON.stringify({ plans: state.plans.map(({name,carrier,values}) => ({name,carrier,values})) }, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], { type:'application/json' }));
+  a.download = 'comparacion-seguros.json';
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+const fileIn = document.getElementById('fileImport');
+document.getElementById('btnImport').addEventListener('click', () => fileIn.click());
+fileIn.addEventListener('change', async () => {
+  const f = fileIn.files[0]; fileIn.value = '';
+  if (!f) return;
+  try{
+    const d = JSON.parse(await f.text());
+    if (!Array.isArray(d.plans) || !d.plans.length) throw 0;
+    state = { plans: d.plans.map(p => ({ ...newPlan(), name:String(p.name||''), carrier:String(p.carrier||''), values:{...(p.values||{})} })) };
+    save(); render();
+  }catch(e){ window.alert('Archivo no válido.'); }
+});
+
+render();
+</script>
+</body>
+</html>
