@@ -72,10 +72,11 @@ thead th{position:sticky;top:0;z-index:3;background:var(--surface);border-bottom
 thead th.lbl{z-index:4;vertical-align:bottom;color:var(--muted);font-size:.8rem;font-weight:500}
 .planhead{width:var(--col-w);min-width:var(--col-w);padding:10px 10px 8px;border-right:1px solid var(--border);text-align:left;vertical-align:top}
 .planhead .num{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
-.planhead input{width:100%;border:1px solid transparent;border-radius:6px;background:transparent;color:inherit;font:inherit;padding:4px 6px;margin-left:-6px}
-.planhead input:hover{border-color:var(--border)}
-.planhead input:focus{outline:none;border-color:var(--accent)}
-.planhead input.name{font-weight:700;color:var(--accent);font-size:1rem}
+.planhead input,.planhead textarea{width:100%;border:1px solid transparent;border-radius:6px;background:transparent;color:inherit;font:inherit;padding:4px 6px;margin-left:-6px;display:block}
+.planhead textarea.name{resize:none;overflow:hidden;line-height:1.25}
+.planhead input:hover,.planhead textarea:hover{border-color:var(--border)}
+.planhead input:focus,.planhead textarea:focus{outline:none;border-color:var(--accent)}
+.planhead .name{font-weight:700;color:var(--accent);font-size:1rem}
 .planhead input.carrier{font-size:.82rem;color:var(--muted)}
 .planhead .actions{display:flex;gap:4px}
 .icon{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:6px;width:26px;height:26px;display:inline-grid;place-items:center;padding:0;font-size:13px}
@@ -94,10 +95,40 @@ th.addhead{width:70px;min-width:70px;vertical-align:middle;text-align:center;pos
 .menu hr{border:0;border-top:1px solid var(--border);margin:6px 0}
 footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);font-size:.8rem}
 
+.mobile-add{display:none}
+/* Celular: etiqueta + 2 planes caben exactamente en el ancho de la pantalla */
 @media (max-width:640px){
-  :root{--label-w:140px;--col-w:190px}
-  h1{font-size:1.25rem}
-  .lbl{font-size:.82rem;padding:8px}
+  :root{
+    --label-w:clamp(92px,28vw,130px);
+    --col-w:max(108px,calc((100vw - 18px - var(--label-w)) / 2));
+  }
+  body{font-size:13px}
+  header.top{padding:12px 9px 6px;gap:8px}
+  h1{font-size:1.1rem}
+  .sub{font-size:.78rem}
+  .toolbar{gap:5px}
+  .btn{padding:5px 8px;font-size:.78rem;border-radius:6px}
+  .toggle{font-size:.78rem}
+  .mobile-add{display:inline-block}
+  .legend{padding:0 9px 6px;gap:8px;font-size:.72rem}
+  main{padding:0 8px 24px}
+  .wrap{border-radius:8px}
+  .lbl{font-size:.74rem;padding:5px 6px;line-height:1.2}
+  .lbl small{font-size:.64rem}
+  td.cell input,td.cell select,td.cell textarea{padding:6px 5px;font-size:.8rem}
+  td.calc{padding:6px 5px;font-size:.8rem}
+  tr.section th{padding:5px 6px;font-size:.64rem}
+  tr.section th span{display:block;margin:0}
+  .planhead{padding:6px 5px 5px}
+  .planhead .num{font-size:.6rem;flex-wrap:wrap;gap:3px}
+  .planhead input,.planhead textarea{padding:2px 4px;margin-left:-4px}
+  .planhead .name{font-size:.82rem}
+  .planhead input.carrier{font-size:.68rem}
+  .icon{width:22px;height:22px;font-size:11px}
+  .wins{font-size:.64rem;margin-top:3px}
+  th.addhead,td.addcol{width:52px;min-width:52px}
+  .plus{width:34px;height:34px;font-size:20px}
+  footer{padding:0 9px 20px;font-size:.7rem}
 }
 @media print{
   .toolbar,.legend,th.addhead,td.addcol,.planhead .actions,footer,.menu{display:none!important}
@@ -115,6 +146,7 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
     <p class="sub">Agrega planes con <b>+</b>, copia datos del plan anterior y compara lado a lado.</p>
   </div>
   <div class="toolbar">
+    <button class="btn primary mobile-add addtrigger" id="btnAddTop">+ Agregar</button>
     <label class="toggle"><input type="checkbox" id="onlyDiff"> Solo diferencias</label>
     <button class="btn" id="btnExample">Cargar ejemplo</button>
     <button class="btn" id="btnExport">Exportar</button>
@@ -288,12 +320,12 @@ function render(){
         <button class="icon" data-act="dup" title="Duplicar este plan">⧉</button>
         ${n>1?`<button class="icon del" data-act="del" title="Eliminar plan">✕</button>`:''}
       </span></div>
-      <input class="name" data-field="name" placeholder="Nombre del plan" value="${esc(p.name)}">
+      <textarea class="name" data-field="name" rows="1" placeholder="Nombre del plan">${esc(p.name)}</textarea>
       <input class="carrier" data-field="carrier" placeholder="Aseguradora" value="${esc(p.carrier)}">
       <div class="wins"></div>
     </th>`;
   });
-  h += `<th class="addhead"><button class="plus" id="btnAdd" title="Agregar otro seguro" aria-label="Agregar otro seguro">+</button></th></tr></thead><tbody>`;
+  h += `<th class="addhead"><button class="plus addtrigger" id="btnAdd" title="Agregar otro seguro" aria-label="Agregar otro seguro">+</button></th></tr></thead><tbody>`;
 
   SECTIONS.forEach(sec => {
     h += `<tr class="section"><th>${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</th>${'<td></td>'.repeat(n)}<td class="addcol"></td></tr>`;
@@ -318,8 +350,11 @@ function render(){
   });
   h += '</tbody>';
   grid.innerHTML = h;
+  fitNames();
   refresh();
 }
+function fitName(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
+function fitNames(){ grid.querySelectorAll('th.planhead .name').forEach(fitName); }
 
 function refresh(){
   const wins = state.plans.map(()=>0);
@@ -354,7 +389,13 @@ function refresh(){
 grid.addEventListener('input', e => {
   const t = e.target;
   const head = t.closest('th.planhead');
-  if (head){ state.plans[+head.dataset.plan][t.dataset.field] = t.value; save(); return; }
+  if (head){
+    if (t.classList.contains('name')){
+      if (/\n/.test(t.value)) t.value = t.value.replace(/\n+/g, ' ');
+      fitName(t);
+    }
+    state.plans[+head.dataset.plan][t.dataset.field] = t.value; save(); return;
+  }
   const td = t.closest('td.cell');
   if (!td) return;
   state.plans[+td.dataset.plan].values[t.dataset.key] = t.value;
@@ -402,13 +443,17 @@ menu.addEventListener('click', e => {
   menu.hidden = true; save(); render();
   const wrap = document.querySelector('.wrap');
   wrap.scrollTo({ left: wrap.scrollWidth, behavior: 'smooth' });
-  const heads = grid.querySelectorAll('th.planhead input.name');
+  const heads = grid.querySelectorAll('th.planhead .name');
   heads[heads.length-1].focus({ preventScroll:true });
   heads[heads.length-1].select();
 });
-document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && e.target.id !== 'btnAdd') menu.hidden = true; });
+document.getElementById('btnAddTop').addEventListener('click', e => openMenu(e.currentTarget));
+document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && !e.target.closest('.addtrigger')) menu.hidden = true; });
+// iOS hace zoom al tocar campos con letra < 16px; esto lo evita (iOS sigue permitiendo pellizcar para zoom)
+if (/iPhone|iPad|iPod/.test(navigator.userAgent)) document.querySelector('meta[name=viewport]').content = 'width=device-width, initial-scale=1, maximum-scale=1';
 document.addEventListener('keydown', e => { if (e.key === 'Escape') menu.hidden = true; });
-window.addEventListener('resize', () => menu.hidden = true);
+window.addEventListener('resize', () => { menu.hidden = true; fitNames(); });
+grid.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList.contains('name')) { e.preventDefault(); e.target.blur(); } });
 
 document.getElementById('onlyDiff').addEventListener('change', refresh);
 document.getElementById('btnPrint').addEventListener('click', () => window.print());
