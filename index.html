@@ -95,7 +95,6 @@ th.addhead{width:70px;min-width:70px;vertical-align:middle;text-align:center;pos
 .menu hr{border:0;border-top:1px solid var(--border);margin:6px 0}
 footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);font-size:.8rem}
 
-.mobile-add{display:none}
 /* Celular: etiqueta + 2 planes caben exactamente en el ancho de la pantalla */
 @media (max-width:640px){
   :root{
@@ -109,7 +108,6 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   .toolbar{gap:5px}
   .btn{padding:5px 8px;font-size:.78rem;border-radius:6px}
   .toggle{font-size:.78rem}
-  .mobile-add{display:inline-block}
   .legend{padding:0 9px 6px;gap:8px;font-size:.72rem}
   main{padding:0 8px 24px}
   .wrap{border-radius:8px}
@@ -129,6 +127,41 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   th.addhead,td.addcol{width:52px;min-width:52px}
   .plus{width:34px;height:34px;font-size:20px}
   footer{padding:0 9px 20px;font-size:.7rem}
+}
+/* ---------- Pestañas y carga ---------- */
+.tabs{max-width:1400px;margin:0 auto 14px;padding:0 16px;display:flex;gap:4px;border-bottom:1px solid var(--border)}
+.tabs button{border:0;background:transparent;color:var(--muted);padding:10px 16px;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs button:hover{color:var(--text)}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.count{background:var(--surface-2);color:var(--muted);border-radius:10px;padding:1px 7px;font-size:.75rem;margin-left:2px}
+.view .toolbar{margin:0 0 8px}
+.view .legend{padding:0 0 10px;margin:0}
+.foot{color:var(--muted);font-size:.8rem;margin:10px 0 0}
+.importer{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:12px 16px;margin-bottom:14px}
+.imp-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.imp-title{font-weight:700;margin-right:4px}
+.imp-status{margin-top:10px;padding:8px 12px;border-radius:8px;background:var(--surface-2);font-size:.88rem}
+.imp-status.err{background:var(--worst-bg);color:var(--worst-ink)}
+.imp-status.ok{background:var(--best-bg);color:var(--best-ink)}
+.progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.preview{margin-top:12px;border:2px solid var(--accent);border-radius:10px;padding:12px}
+.preview h3{margin:0 0 10px;font-size:1rem}
+.preview .field.conf input{border-color:#c99700;background:color-mix(in srgb,#d9a400 14%,var(--surface))}
+.preview .field.wide{grid-column:1/-1}
+.preview textarea{font:inherit;font-size:.88rem;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 8px;min-height:54px;resize:vertical}
+.wmsg{color:#a87e00;font-size:.72rem}
+.pv-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.pv-actions select{font:inherit;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 8px;max-width:100%}
+.ptitle{margin:0;padding:14px 16px 10px;font-size:1.05rem}
+@media (max-width:640px){
+  .tabs{padding:0 8px;margin-bottom:10px}
+  .tabs button{padding:9px 10px;font-size:.88rem;flex:1}
+  .importer{padding:10px;border-radius:8px}
+  .imp-title{width:100%}
+  .imp-actions .btn{flex:1 1 auto}
+  .ptitle{padding:10px 10px 8px;font-size:.95rem}
+  .preview{padding:10px}
 }
 /* ---------- Mi situación ---------- */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px}
@@ -196,7 +229,7 @@ tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
   .strategy{font-size:.8rem}
 }
 @media print{
-  .toolbar,.legend,th.addhead,td.addcol,.planhead .actions,footer,.menu{display:none!important}
+  .toolbar,.legend,th.addhead,td.addcol,.planhead .actions,footer,.menu,.tabs,.importer,.foot{display:none!important}
   body{background:#fff;color:#000}
   .wrap{overflow:visible;box-shadow:none;border:0}
   thead th{position:static}
@@ -208,35 +241,55 @@ tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
 <header class="top">
   <div>
     <h1>🩺 Comparador de Seguros Médicos</h1>
-    <p class="sub">Agrega planes con <b>+</b>, copia datos del plan anterior y compara lado a lado.</p>
-  </div>
-  <div class="toolbar">
-    <button class="btn primary mobile-add addtrigger" id="btnAddTop">+ Agregar</button>
-    <label class="toggle"><input type="checkbox" id="onlyDiff"> Solo diferencias</label>
-    <button class="btn" id="btnExample">Cargar ejemplo</button>
-    <button class="btn" id="btnExport">Exportar</button>
-    <button class="btn" id="btnImport">Importar</button>
-    <button class="btn" id="btnPrint">Imprimir / PDF</button>
-    <button class="btn" id="btnReset">Limpiar todo</button>
-    <input type="file" id="fileImport" accept="application/json,.json" hidden>
+    <p class="sub">Carga tus planes (foto, PDF o a mano) y analiza cuál te conviene.</p>
   </div>
 </header>
-<div class="legend">
-  <span><i class="chip best"></i>Mejor valor (más bajo)</span>
-  <span><i class="chip worst"></i>Peor valor (más alto / precio completo)</span>
-  <span>Los datos se guardan automáticamente en este navegador.</span>
-</div>
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <button role="tab" data-tab="load" aria-selected="true">📥 Cargar planes <span class="count" id="planCount"></span></button>
+  <button role="tab" data-tab="analysis" aria-selected="false">📊 Análisis</button>
+</nav>
 <main>
-  <details class="panel" id="profile" open>
-    <summary>🎯 Mi situación: ¿cuál plan me conviene?</summary>
-    <div class="pbody">
-      <div id="pform"></div>
-      <div id="presults"></div>
+  <section class="view" id="view-load" role="tabpanel">
+    <div class="importer">
+      <div class="imp-actions">
+        <span class="imp-title">Agregar un plan desde:</span>
+        <button class="btn primary" id="btnPhoto">📷 Foto / captura</button>
+        <button class="btn primary" id="btnPdf">📄 PDF (Summary of Benefits)</button>
+        <button class="btn addtrigger" id="btnAddTop">✏️ A mano / copiar otro</button>
+        <input type="file" id="filePhoto" accept="image/*" hidden>
+        <input type="file" id="filePdf" accept="application/pdf,.pdf" hidden>
+      </div>
+      <p class="muted" style="margin:8px 0 0">La foto o el PDF se leen <b>dentro de tu navegador</b>, sin IA y sin subirlos a ningún sitio. Siempre podrás revisar y corregir antes de guardar.</p>
+      <div id="impStatus" class="imp-status" hidden></div>
+      <div id="impPreview" hidden></div>
     </div>
-  </details>
-  <div class="wrap"><table id="grid"></table></div>
+    <div class="toolbar">
+      <label class="toggle"><input type="checkbox" id="onlyDiff"> Solo diferencias</label>
+      <button class="btn" id="btnExample">Cargar ejemplo</button>
+      <button class="btn" id="btnExport">Exportar</button>
+      <button class="btn" id="btnImport">Importar</button>
+      <button class="btn" id="btnPrint">Imprimir / PDF</button>
+      <button class="btn" id="btnReset">Limpiar todo</button>
+      <input type="file" id="fileImport" accept="application/json,.json" hidden>
+    </div>
+    <div class="legend">
+      <span><i class="chip best"></i>Mejor valor (más bajo)</span>
+      <span><i class="chip worst"></i>Peor valor (más alto / precio completo)</span>
+      <span>Los datos se guardan automáticamente en este navegador.</span>
+    </div>
+    <div class="wrap"><table id="grid"></table></div>
+    <p class="foot">Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code>, <code>30%</code> o <code>50% after deductible</code>. "Full price" cuenta como el peor valor.</p>
+  </section>
+  <section class="view" id="view-analysis" role="tabpanel" hidden>
+    <div class="panel" id="profile">
+      <h2 class="ptitle">🎯 Mi situación: ¿cuál plan me conviene?</h2>
+      <div class="pbody">
+        <div id="pform"></div>
+        <div id="presults"></div>
+      </div>
+    </div>
+  </section>
 </main>
-<footer>Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code> o <code>30%</code>. "Full price" / "Precio completo" cuenta como el peor valor.</footer>
 
 <div class="menu" id="addMenu" hidden></div>
 
@@ -432,6 +485,7 @@ function render(){
   });
   h += '</tbody>';
   grid.innerHTML = h;
+  document.getElementById('planCount').textContent = state.plans.length;
   fitNames();
   renderProfileForm();
   refresh();
@@ -584,7 +638,7 @@ function defaultProfile(){
   return {
     status: 'normal',
     normal: { pcp:4, specialist:2, urgent:0, blood:1, xray:0, generic:0 },
-    preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', anyMonth:false, current:'' },
+    preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', switchMode:'any', current:'' },
     prices: { pcp:150, specialist:250, urgent:200, blood:150, xray:150, generic:15, ob:200, us:300,
               facV:8000, proV:2500, facC:13000, proC:3500 },
   };
@@ -781,8 +835,8 @@ function renderProfileForm(){
       ${selField('preg.risk', 'Tipo de embarazo', P.preg.risk, [['normal','Normal'],['high','Alto riesgo (más consultas)']])}
       ${selField('preg.delivery', 'Tipo de parto', P.preg.delivery, [['vaginal','Natural'],['cesarea','Cesárea']])}
       ${selField('preg.billing', 'Consultas prenatales se cobran…', P.preg.billing, [['plan','Según el plan (fila Consultas prenatales)'],['specialist','Como especialista (copago)'],['preventive','Gratis (preventivo)']])}
-      ${selField('preg.current', 'Plan que tengo ahora (hasta el 31 de dic)', String(P.preg.current), [['', 'Ninguno / todavía puedo elegir'], ...state.plans.map((_, i) => [String(i), planName(i)])])}
-      <label class="field check"><input type="checkbox" data-p="preg.anyMonth"${P.preg.anyMonth ? ' checked' : ''}> Calcular también si pudiera cambiar de plan en cualquier mes (solo con Período Especial de Inscripción)</label>
+      ${selField('preg.current', 'Plan que tengo ahora', String(P.preg.current), [['', 'Ninguno / todavía puedo elegir'], ...state.plans.map((_, i) => [String(i), planName(i)])])}
+      ${selField('preg.switchMode', '¿Puedes cambiar de plan en cualquier momento?', P.preg.switchMode, [['any','Sí, en cualquier mes'],['rules','No: solo el 1 de enero y después del parto']])}
     </div>`;
     prices = ['ob','us','blood','specialist','facV','proV','facC','proC'];
   }
@@ -827,6 +881,8 @@ function dataWarnings(infos){
   const miss = [], assumed = [];
   infos.forEach((inf, i) => { if (inf.missing) miss.push(planName(i)); if (inf.coinsAssumed) assumed.push(planName(i)); });
   let w = '';
+  const noPrem = state.plans.map((p, i) => { const c = parseCost(p.values.premium); return c && c.kind !== 'pct' && isFinite(c.n) ? null : planName(i); }).filter(Boolean);
+  if (noPrem.length) w += `<li><b>Falta el pago mensual</b> en <b>${noPrem.map(esc).join(', ')}</b>: se calculó como $0 y puede parecer más barato de lo que es.</li>`;
   if (miss.length) w += `<li>Faltan datos en <b>${miss.map(esc).join(', ')}</b>: lo que está vacío se calculó como precio completo.</li>`;
   if (assumed.length) w += `<li>Coaseguro vacío en <b>${assumed.map(esc).join(', ')}</b>: se asumió ${DEFAULT_COINS*100}%.</li>`;
   return w;
@@ -875,12 +931,15 @@ function pregHTML(){
   const singles = state.plans.map(p => stint(p, months, 0, M));
   const totals = singles.map(s => s.total);
   const bestSingle = totals.indexOf(Math.min(...totals));
+  const anyMode = P.switchMode !== 'rules';
   const realPts = [0, ...months.map((m, i) => m.m === 0 ? i : -1), birthIdx + 1];
   const firstJan = months.findIndex((m, i) => i > 0 && m.m === 0);
   const cur = P.current === '' || P.current == null ? -1 : +P.current;
-  const locked = cur >= 0 && cur < n && firstJan > 0;
-  const real = bestStrategy(months, realPts, locked ? firstJan : 0, locked ? cur : -1);
-  const free = P.anyMonth ? bestStrategy(months, months.map((_, i) => i)) : null;
+  const hasCur = cur >= 0 && cur < n;
+  // con reglas: el plan actual sigue hasta el 1 de enero; cambiando cuando quieras: el cambio empieza el mes siguiente
+  const rules = bestStrategy(months, realPts, hasCur && firstJan > 0 ? firstJan : 0, hasCur && firstJan > 0 ? cur : -1);
+  const free = bestStrategy(months, months.map((_, i) => i), hasCur && M > 1 ? 1 : 0, hasCur && M > 1 ? cur : -1);
+  const real = anyMode ? free : rules, alt = anyMode ? rules : free;
   const range = (s, e) => s === e - 1 ? monthName(months[s].date) : `${monthName(months[s].date)} – ${monthName(months[e-1].date)}`;
   const stratHTML = (st, title) => {
     const save = totals[bestSingle] - st.total;
@@ -897,9 +956,9 @@ function pregHTML(){
   h += `<h3 style="margin:0 0 8px;font-size:.95rem">Lo que te sale del bolsillo desde hoy hasta la consulta postparto (prima + gastos)</h3>`;
   h += kpiHTML(totals, i => `Prima ${money0(planNums(state.plans[i]).premium * M)} + médicos ${money0(totals[i] - planNums(state.plans[i]).premium * M)}`);
   if (n > 1){
-    h += `<div class="notes" style="margin-top:12px">${stratHTML(real, '✅ Mejor estrategia realista <span class="muted">(cambios solo el 1 de enero y después del parto)</span>')}`;
-    if (free) h += stratHTML(free, '🧪 Si pudieras cambiar en cualquier mes <span class="muted">(necesita Período Especial)</span>');
-    h += `</div>`;
+    h += `<div class="notes" style="margin-top:12px">${anyMode
+      ? stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambiando de plan cuando convenga)</span>') + stratHTML(alt, '📅 Si solo pudieras cambiar el 1 de enero y después del parto')
+      : stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambios solo el 1 de enero y después del parto)</span>') + stratHTML(alt, '🧪 Si pudieras cambiar en cualquier mes')}</div>`;
   }
   // tabla mes a mes
   h += `<div class="tl" style="margin-top:12px"><table><thead><tr><th>Mes</th><th>Semanas</th><th>Consultas</th><th>Eco</th><th>Análisis</th><th style="text-align:left">Carga</th>`;
@@ -917,11 +976,13 @@ function pregHTML(){
     h += `</tr>`;
   });
   h += `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td></td>${totals.map((t, k) => `<td class="${n > 1 && k === bestSingle ? 'best' : ''}">${money0(t)}</td>`).join('')}</tr></tbody></table></div>`;
-  h += `<p class="muted" style="margin:6px 0 0">Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia realista · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
+  h += `<p class="muted" style="margin:6px 0 0">Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
 
   // advertencias
   const birthYear = g.due.getFullYear(), crosses = months.slice(0, birthIdx + 1).some(m => m.y !== today.getFullYear());
-  let w = `<li><b>El embarazo no te deja cambiar de plan a mitad de año</b> en Florida (HealthCare.gov). Solo puedes cambiar en la inscripción abierta (para empezar el 1 de enero) o en los 60 días después del nacimiento, cuando también agregas al bebé.</li>`;
+  let w = anyMode
+    ? `<li><b>Confirma con tu agente que puedes cambiar de plan cuando quieras.</b> En HealthCare.gov normalmente hace falta un Período Especial de Inscripción: en Florida el embarazo por sí solo no lo da, el nacimiento sí (60 días). Cada cambio suele empezar el día 1 del mes siguiente.</li>`
+    : `<li><b>El embarazo no te deja cambiar de plan a mitad de año</b> en Florida (HealthCare.gov). Solo puedes cambiar en la inscripción abierta (para empezar el 1 de enero) o en los 60 días después del nacimiento, cuando también agregas al bebé.</li>`;
   if (birthYear > today.getFullYear()) w += `<li>El parto cae en <b>${birthYear}</b>: el plan que elijas en esta inscripción abierta es el que paga el parto. Para que empiece el 1 de enero, inscríbete antes del <b>15 de diciembre</b>.</li>`;
   if (crosses) w += `<li>El embarazo cruza el 1 de enero: el deducible y el máximo de bolsillo vuelven a empezar en ${today.getFullYear() + 1}.</li>`;
   w += `<li>Cambiar de plan también reinicia el deducible y el máximo de bolsillo.</li>`;
@@ -931,7 +992,445 @@ function pregHTML(){
   return h;
 }
 
+/* ===== Lectores sin IA: PDF del Summary of Benefits (texto) y foto (OCR por palabras) ===== */
+const IMPORT = (() => {
+  const clean = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const fmtAmt = a => '$' + Number(String(a).replace(/,/g, '')).toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+  /* ---------- PDF (SBC federal) ---------- */
+  function sbcValue(t){
+    t = clean(t);
+    if (!t) return '';
+    if (/^no charge/i.test(t)) return 'No charge';
+    if (/^not covered/i.test(t)) return 'Not covered';
+    const drug = /prescription deductible|drug deductible/i.test(t);
+    const ded = !/not subject to/i.test(t) && /subject to (the )?(prescription |drug )?deductible|after (the )?deductible/i.test(t);
+    const suf = ded ? (drug ? ' after drug deductible' : ' after deductible') : '';
+    let m = t.match(/(\d+(?:\.\d+)?)\s*%\s*coinsurance/i);
+    const c = t.match(/\$\s*([\d,]+(?:\.\d+)?)\s*copay(?:ment)?\s*(?:\/\s*([a-z]+))?/i);
+    if (m && (!c || t.indexOf(m[0]) < t.indexOf(c[0]))) return `${m[1]}%${suf}`;
+    if (c) return fmtAmt(c[1]) + (c[2] && /^day/i.test(c[2]) ? ' per day' : '') + suf;
+    m = t.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+    if (m) return fmtAmt(m[1]) + suf;
+    return t.length > 60 ? t.slice(0, 57) + '…' : t;
+  }
+  // pages: [{ items:[{str,x,y}] }]
+  function parseSBC(pages){
+    const v = {}, notes = [];
+    const pageLines = pages.map(p => {
+      const rows = [];
+      p.items.forEach(it => { if (!it.str.trim()) return; let r = rows.find(r => Math.abs(r.y - it.y) <= 2); if (!r){ r = { y: it.y, items: [] }; rows.push(r); } r.items.push(it); });
+      rows.sort((a, b) => b.y - a.y);
+      return rows.map(r => clean(r.items.sort((a, b) => a.x - b.x).map(i => i.str).join(' ')));
+    });
+    const full = pageLines.map(l => l.join('\n')).join('\n');
+    const flat = clean(full);
+    if (!/Summary of Benefits/i.test(flat)) return { ok:false, error:'No parece un Summary of Benefits and Coverage (SBC).' };
+    let name = '', carrier = '';
+    const title = pageLines[0].find(l => /Coverage for:/i.test(l));
+    if (title){ const m = title.match(/^(.+?):\s*(.+?)\s+Coverage for:/i); if (m){ carrier = clean(m[1]); name = clean(m[2]).replace(/\s+Plan$/i, ''); } }
+    const year = (flat.match(/Coverage Period:\s*\d{1,2}\/\d{1,2}\/(\d{4})/i) || [])[1];
+    const net = (flat.match(/Plan Type:\s*(HMO|PPO|EPO|POS)/i) || [])[1];
+    if (net) v.network = net.toUpperCase();
+    const tier = (name.match(/expanded bronze|bronze|silver|gold|platinum|catastrophic/i) || [])[0];
+    if (tier) v.tier = tier.replace(/\b\w/g, ch => ch.toUpperCase());
+    let m = flat.match(/What is the overall[\s\S]{0,250}?\$([\d,]+)\s*individual/i) || flat.match(/What is the overall[\s\S]{0,120}?\$([\d,]+)/i);
+    if (m) v.deductible = fmtAmt(m[1]);
+    m = flat.match(/What is the out-of-pocket limit[^$]{0,60}?\$([\d,]+)/i);
+    if (m) v.oop = fmtAmt(m[1]);
+    m = flat.match(/Yes\.?\s*\$([\d,]+)\s*individual[\s\S]{0,60}?other deductibles/i) || flat.match(/other deductibles[\s\S]{0,80}?Yes\.?\s*\$([\d,]+)/i);
+    if (m) v.drugDed = fmtAmt(m[1]);
+    else if (/other deductibles[\s\S]{0,60}?\bNo\./i.test(flat)) v.drugDed = 'N/A';
+    m = flat.match(/Hospital \(facility\) coinsurance\s*(\d+)%/i) || flat.match(/Other coinsurance\s*(\d+)%/i);
+    if (m) v.coins = m[1] + '%';
+    [['Peg','embarazo con parto'],['Joe','diabetes tipo 2 por un año'],['Mia','fractura simple']].forEach(([who, what]) => {
+      const t = flat.match(new RegExp(`total ${who} would pay is\\s*\\$([\\d,]+)`, 'i'));
+      if (t) notes.push(`Ejemplo oficial "${who}" (${what}): pagarías ${fmtAmt(t[1])}.`);
+    });
+
+    // tabla de servicios: columnas por coordenada x, celdas en el orden del PDF
+    const cells = [];
+    pages.forEach(p => {
+      const hNet = p.items.find(i => /^Network Provider/i.test(clean(i.str)));
+      const hOut = p.items.find(i => /Out-of-Network Provider/i.test(clean(i.str)));
+      const hSvc = p.items.find(i => /^Services You/i.test(clean(i.str)));
+      const hLim = p.items.find(i => /^Limitations/i.test(clean(i.str)));
+      if (!hNet || !hOut || !hSvc) return;
+      const b1 = hSvc.x - 40, b2 = (hSvc.x + hNet.x) / 2, b3 = (hNet.x + hOut.x) / 2, b4 = hLim ? (hOut.x + hLim.x) / 2 : Infinity;
+      const headerY = Math.min(hNet.y, hOut.y) - 8;
+      let cur = null;
+      p.items.forEach(it => {
+        if (!it.str.trim() || it.y >= headerY || it.y < 40) return;
+        const col = it.x < b1 ? 0 : it.x < b2 ? 1 : it.x < b3 ? 2 : it.x < b4 ? 3 : 4;
+        if (!cur || cur.col !== col){ cur = { col, text:'' }; cells.push(cur); }
+        cur.text += ' ' + it.str;
+      });
+    });
+    const rows = [];
+    cells.forEach(c => {
+      if (c.col === 1) rows.push({ svc: clean(c.text), net: '', lim: '' });
+      else if (rows.length && c.col === 2 && !rows[rows.length - 1].net) rows[rows.length - 1].net = clean(c.text);
+      else if (rows.length && c.col === 4) rows[rows.length - 1].lim += ' ' + clean(c.text);
+    });
+    let fac = 0, phys = 0;
+    const found = [];
+    rows.forEach(r => {
+      const s = r.svc.toLowerCase(), n = r.net;
+      if (!n) return;
+      let key = null;
+      if (/primary care/.test(s)) key = 'pcp';
+      else if (/specialist visit/.test(s)) key = 'specialist';
+      else if (/preventive care/.test(s)) key = 'preventive';
+      else if (/diagnostic test/.test(s)){
+        const segs = n.split(/\)\s*,\s*/);
+        const xr = segs.find(g => /x-?\s*ray/i.test(g)), lab = segs.find(g => /lab|blood/i.test(g));
+        v.xray = sbcValue(xr || segs[0]); v.blood = sbcValue(lab || segs[segs.length - 1]); found.push('xray', 'blood');
+        return;
+      }
+      else if (/imaging/.test(s)) key = 'imaging';
+      else if (/generic/.test(s)) key = 'generic';
+      else if (/non-?\s*preferred/.test(s)) key = 'nonpref';
+      else if (/preferred brand/.test(s)) key = 'brand';
+      else if (/specialty drug/.test(s)) key = 'specialty';
+      else if (/childbirth.*professional/.test(s)) key = 'deliveryPro';
+      else if (/childbirth.*facility/.test(s)) key = 'delivery';
+      else if (/facility fee/.test(s)) key = ++fac === 1 ? 'outFac' : fac === 2 ? 'hospFac' : null;
+      else if (/physician\s*\/?\s*surgeon/.test(s)) key = ++phys === 1 ? 'outPhys' : phys === 2 ? 'hospPhys' : null;
+      else if (/emergency room/.test(s)) key = 'er';
+      else if (/emergency medical/.test(s)) key = 'ambulance';
+      else if (/urgent care/.test(s)) key = 'urgent';
+      else if (/outpatient services/.test(s)) key = 'mhOut';
+      else if (/inpatient services/.test(s)) key = 'mhHosp';
+      else if (/office visits/.test(s)) key = 'prenatal';
+      else if (/^rehabilitation/.test(s)) key = 'rehab';
+      if (!key || v[key]) return;
+      v[key] = sbcValue(n.split(/\)\s*,\s*/)[0]);
+      found.push(key);
+      const lim = r.lim.match(/per day copayment will apply for a maximum of[^(]*\((\d+)\)\s*days/i);
+      if (lim && /delivery|hospFac|mhHosp/.test(key)) notes.push(`${r.svc}: ${n} (el copago por día aplica máximo ${lim[1]} días).`);
+    });
+    return { ok: true, plan: { name, carrier: [carrier, year].filter(Boolean).join(' · '), values: { ...v, notes: notes.join(' ') } }, count: Object.keys(v).length };
+  }
+
+  /* ---------- Foto (palabras con posición) ---------- */
+  // words: [{text,x0,y0,x1,y1}]
+  const vOverlap = (a, b) => Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0);
+  const hOverlap = (a, b) => Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0);
+  const H = a => a.y1 - a.y0;
+  function moneyTokens(words){
+    const ws = words.map(w => ({ ...w, t: String(w.text).replace(/[|]/g, '') }))
+      .filter(w => /\d/.test(w.t) && !/[a-z]{3,}/i.test(w.t.replace(/\/?\s*(yr|mo|year|month)\b/ig, '')))
+      .sort((a, b) => a.x0 - b.x0);
+    const used = new Set(), out = [];
+    ws.forEach(w => {
+      if (used.has(w)) return;
+      const group = [w]; used.add(w);
+      let last = w;
+      for (;;){
+        const nx = ws.find(o => !used.has(o) && o.x0 >= last.x1 - 2 && o.x0 - last.x1 <= Math.max(14, 1.0 * H(last)) && vOverlap(o, last) > 0.5 * Math.min(H(o), H(last)));
+        if (!nx) break;
+        group.push(nx); used.add(nx); last = nx;
+      }
+      const pieces = group.map(g => g.t.replace(/\/\s*(yr|mo)\b.*$/i, '').replace(/[^\d.,]/g, '').replace(/[.,]+$/, '')).filter(Boolean);
+      if (!pieces.length) return;
+      let num;
+      if (pieces.length > 1 && !pieces.join('').includes('.') && /^\d{2}$/.test(pieces[pieces.length - 1]))
+        num = pieces.slice(0, -1).join('').replace(/,/g, '') + '.' + pieces[pieces.length - 1];
+      else num = pieces.join('').replace(/,/g, '');
+      if (!/^\d+(\.\d+)?$/.test(num)) return;
+      const box = { x0: Math.min(...group.map(g => g.x0)), y0: Math.min(...group.map(g => g.y0)), x1: Math.max(...group.map(g => g.x1)), y1: Math.max(...group.map(g => g.y1)) };
+      out.push({ ...box, n: parseFloat(num), raw: group.map(g => g.text).join(' ') });
+    });
+    return out;
+  }
+  function lines(words){
+    const ls = [], cy = a => (a.y0 + a.y1) / 2;
+    [...words].sort((a, b) => a.y0 - b.y0).forEach(w => {
+      const l = ls.find(l => { const r = l.ref, hmin = Math.min(H(r), H(w)), hmax = Math.max(H(r), H(w));
+        return Math.abs(cy(r) - cy(w)) < 0.5 * hmin && hmax / Math.max(1, hmin) < 1.8; });
+      if (l){ l.words.push(w); l.y0 = Math.min(l.y0, w.y0); l.y1 = Math.max(l.y1, w.y1); l.x0 = Math.min(l.x0, w.x0); l.x1 = Math.max(l.x1, w.x1); }
+      else ls.push({ ref:w, words:[w], x0:w.x0, y0:w.y0, x1:w.x1, y1:w.y1 });
+    });
+    ls.forEach(l => l.words.sort((a, b) => a.x0 - b.x0));
+    return ls.sort((a, b) => a.y0 - b.y0);
+  }
+  const norm = s => String(s).toLowerCase().replace(/[^a-z-]/g, '');
+  // busca una secuencia de palabras (regex por palabra) en la misma línea
+  function findLabel(words, seq, notAfter){
+    const ls = lines(words);
+    for (const l of ls){
+      const ws = l.words;
+      for (let i = 0; i + seq.length <= ws.length; i++){
+        if (!seq.every((re, k) => re.test(norm(ws[i + k].text)))) continue;
+        if (notAfter && i > 0 && notAfter.test(norm(ws[i - 1].text)) && ws[i].x0 - ws[i - 1].x1 < 3 * H(ws[i])) continue;
+        const g = ws.slice(i, i + seq.length);
+        return { x0: g[0].x0, y0: Math.min(...g.map(w => w.y0)), x1: g[g.length - 1].x1, y1: Math.max(...g.map(w => w.y1)) };
+      }
+    }
+    return null;
+  }
+  function valueNear(label, money, order){
+    for (const dir of order){
+      let best = null, bd = Infinity;
+      money.forEach(m => {
+        let d = Infinity;
+        if (dir === 'right' && vOverlap(m, label) > 0.4 * Math.min(H(m), H(label)) && m.x0 >= label.x1 - 2) d = m.x0 - label.x1;
+        if (dir === 'above' && m.y1 <= label.y0 + 6 && hOverlap(m, label) > 0) d = label.y0 - m.y1;
+        if (dir === 'below' && m.y0 >= label.y1 - 6 && (hOverlap(m, label) > 0 || Math.abs((m.x0 + m.x1) / 2 - (label.x0 + label.x1) / 2) < (label.x1 - label.x0))) d = m.y0 - label.y1;
+        const lim = dir === 'right' ? 700 : 4 * H(label);
+        if (d >= -6 && d <= lim && d < bd){ bd = d; best = m; }
+      });
+      if (best) return best;
+    }
+    return null;
+  }
+  const PHOTO_FIELDS = [
+    { key:'premium',    seqs:[[/^monthly$/, /^premium$/], [/^premium$/]], order:['above','below','right'], money:true },
+    { key:'deductible', seqs:[[/^deductible$/]], notAfter:/^drug$/, order:['above','below','right'] },
+    { key:'drugDed',    seqs:[[/^drug$/, /^deductible$/]], order:['right','below'] },
+    { key:'oop',        seqs:[[/^out-of-pocket$/], [/^out$/, /^of$/, /^pocket$/], [/^out-of$/, /^pocket$/]], order:['right','below','above'] },
+    { key:'pcp',        seqs:[[/^doctor$/, /^visits?$/], [/^primary$/, /^care$/]], order:['right','below'] },
+    { key:'specialist', seqs:[[/^specialist$/]], order:['right','below'] },
+    { key:'generic',    seqs:[[/^generic$/]], order:['right','below'] },
+    { key:'urgent',     seqs:[[/^urgent$/, /^care$/]], order:['right','below'] },
+    { key:'er',         seqs:[[/^emergency$/, /^room$/]], order:['right','below'] },
+  ];
+  function parsePhoto(words){
+    words = words.filter(w => String(w.text).trim());
+    const money = moneyTokens(words), v = {}, used = new Set();
+    PHOTO_FIELDS.forEach(f => {
+      let lab = null;
+      for (const s of f.seqs){ lab = findLabel(words, s, f.notAfter); if (lab) break; }
+      if (!lab) return;
+      const m = valueNear(lab, money.filter(x => !used.has(x)), f.order);
+      if (!m) return;
+      used.add(m);
+      v[f.key] = f.key === 'premium' ? '$' + m.n.toFixed(2) : fmtAmt(m.n);
+    });
+    // nombre, red, nivel y aseguradora
+    const ls = lines(words);
+    const text = words.map(w => w.text).join(' ');
+    const netLine = ls.find(l => l.words.some(w => /^(hmo|ppo|epo|pos)$/i.test(w.text)));
+    if (netLine){
+      v.network = netLine.words.find(w => /^(hmo|ppo|epo|pos)$/i.test(w.text)).text.toUpperCase();
+      const t = netLine.words.map(w => w.text.toLowerCase()).join(' ');
+      const tier = /expanded\s+bronze/.test(t) ? 'Expanded Bronze' : /bronze/.test(t) ? 'Bronze' : /silver/.test(t) ? 'Silver' : /gold/.test(t) ? 'Gold' : /platinum/.test(t) ? 'Platinum' : /catastroph/.test(t) ? 'Catastrophic' : '';
+      if (tier) v.tier = tier;
+    }
+    const CARRIERS = [[/oscar/i,'Oscar'],[/ambetter/i,'Ambetter'],[/florida\s*blue|blue\s*cross/i,'Florida Blue'],[/aetna/i,'Aetna'],[/cigna/i,'Cigna'],[/united\s*health/i,'UnitedHealthcare'],[/avmed/i,'AvMed'],[/molina/i,'Molina']];
+    const car = CARRIERS.find(([re]) => re.test(text));
+    const firstLabelY = Math.min(...PHOTO_FIELDS.flatMap(f => f.seqs.map(s => findLabel(words, s, f.notAfter))).filter(Boolean).map(l => l.y0), Infinity);
+    let name = '';
+    const STOP = /^(oscar|plan|summary|hmo|ppo|epo|pos|expanded|bronze|silver|gold|platinum|catastrophic|@|-|–|\W+)$/i;
+    for (const l of ls){
+      if (l.y0 >= firstLabelY) break;
+      const lt = l.words.map(w => w.text).join(' ');
+      if (/^plan summary$/i.test(lt) || /deductible|premium|out-of-pocket|visits?\b|generic/i.test(lt)) continue;
+      // cortar en el primer hueco grande (logo a la derecha) y quitar logo/red/nivel
+      const ws = [];
+      for (const w of l.words){ if (ws.length && w.x0 - ws[ws.length - 1].x1 > 4 * H(w)) break; ws.push(w); }
+      let parts = ws.map(w => w.text);
+      if (l === netLine){
+        const i = parts.findIndex(p => /^(hmo|ppo|epo|pos)$/i.test(p));
+        parts = parts.slice(0, Math.max(0, i)).filter(p => !/^(oscar|-|–)$/i.test(p));
+      }
+      while (parts.length && /^(oscar|-|–|@)$/i.test(parts[0])) parts.shift();
+      while (parts.length && /^(-|–|@)$/.test(parts[parts.length - 1])) parts.pop();
+      if (parts.length && !parts.every(p => STOP.test(p)) && parts.join('').length >= 4){ name = parts.join(' '); break; }
+    }
+    const count = Object.keys(v).filter(k => !['network','tier'].includes(k)).length;
+    return { ok: count > 0, plan: { name, carrier: car ? car[1] : '', values: v }, count, error: count ? '' : 'No encontré datos de precios en la foto.' };
+  }
+  // combina dos lecturas: la primera manda, la segunda rellena huecos
+  function mergePlans(a, b){
+    if (!b) return { ...a, conflicts: {} };
+    const conflicts = {};
+    Object.keys(a.values).forEach(k => { if (b.values[k] && b.values[k] !== a.values[k]) conflicts[k] = b.values[k]; });
+    return { name: a.name || b.name, carrier: a.carrier || b.carrier, values: { ...b.values, ...a.values }, conflicts };
+  }
+  return { parseSBC, parsePhoto, mergePlans, moneyTokens };
+})();
+
+/* =====================  PESTAÑAS  ===================== */
+function showTab(t){
+  document.querySelectorAll('.tabs [role=tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+  document.getElementById('view-load').hidden = t !== 'load';
+  document.getElementById('view-analysis').hidden = t !== 'analysis';
+  try { localStorage.setItem('ic-tab', t); } catch(e){}
+  if (t === 'analysis') renderResults(); else fitNames();
+}
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) showTab(b.dataset.tab); });
+
+/* =====================  CARGAR DESDE FOTO / PDF  ===================== */
+const LIBS = {
+  pdf:       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+  pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+  tess:      'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+};
+const scriptLoads = {};
+function loadScript(src){
+  if (!scriptLoads[src]) scriptLoads[src] = new Promise((res, rej) => {
+    const el = document.createElement('script');
+    el.src = src; el.onload = res;
+    el.onerror = () => { delete scriptLoads[src]; el.remove(); rej(new Error('No se pudo descargar el lector. ¿Tienes internet?')); };
+    document.head.appendChild(el);
+  });
+  return scriptLoads[src];
+}
+const impStatus = document.getElementById('impStatus'), impPreview = document.getElementById('impPreview');
+function setStatus(html, pct, kind){
+  impStatus.hidden = false;
+  impStatus.className = 'imp-status' + (kind ? ' ' + kind : '');
+  impStatus.innerHTML = html + (pct != null ? `<div class="progress"><i style="width:${Math.max(2, Math.min(100, pct))}%"></i></div>` : '');
+}
+let busy = false;
+async function runImport(fn, file){
+  if (busy) return;
+  busy = true; impPreview.hidden = true;
+  try { await fn(file); }
+  catch (err){ setStatus('⚠ ' + esc(err && err.message || String(err)), null, 'err'); }
+  finally { busy = false; }
+}
+document.getElementById('btnPhoto').addEventListener('click', () => document.getElementById('filePhoto').click());
+document.getElementById('btnPdf').addEventListener('click', () => document.getElementById('filePdf').click());
+document.getElementById('filePhoto').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) runImport(importPhoto, f); });
+document.getElementById('filePdf').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) runImport(importPdf, f); });
+
+async function importPdf(file){
+  setStatus('📄 Abriendo el PDF…', 3);
+  await loadScript(LIBS.pdf);
+  pdfjsLib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+  const pages = [];
+  for (let p = 1; p <= doc.numPages; p++){
+    const tc = await (await doc.getPage(p)).getTextContent();
+    pages.push({ items: tc.items.map(i => ({ str: i.str, x: i.transform[4], y: i.transform[5] })) });
+    setStatus(`📄 Leyendo página ${p} de ${doc.numPages}…`, 5 + 90 * p / doc.numPages);
+  }
+  const chars = pages.reduce((a, pg) => a + pg.items.reduce((b, i) => b + i.str.trim().length, 0), 0);
+  if (chars < 50) throw new Error('Este PDF no tiene texto (está hecho de imágenes). Haz una captura de pantalla de un plan y súbela con 📷 Foto.');
+  const r = IMPORT.parseSBC(pages);
+  if (!r.ok) throw new Error(r.error + ' Para otros documentos, haz una captura de un plan y usa 📷 Foto.');
+  showPreview(r.plan, 'PDF · ' + file.name, {});
+}
+
+let tessWorkerP = null, tessLog = () => {};
+function getTessWorker(){
+  if (!tessWorkerP) tessWorkerP = (async () => {
+    const w = await Tesseract.createWorker('eng', 1, { logger: m => tessLog(m) });
+    await w.setParameters({ tessedit_pageseg_mode: '11' });   // texto disperso: cada palabra con su posición
+    return w;
+  })().catch(err => { tessWorkerP = null; throw err; });
+  return tessWorkerP;
+}
+function loadImage(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('No pude abrir la imagen. Prueba con una captura en JPG o PNG.')); };
+    img.src = url;
+  });
+}
+function toCanvas(img, scale){
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(img.naturalWidth * scale)); c.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  try { ctx.filter = 'grayscale(1)'; } catch(e){}
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+async function importPhoto(file){
+  setStatus('📷 Abriendo la imagen…', 2);
+  const img = await loadImage(file);
+  setStatus('⬇️ Preparando el lector de texto (la primera vez descarga unos MB)…', 5);
+  await loadScript(LIBS.tess);
+  const w0 = img.naturalWidth;
+  const s1 = Math.min(1, 2000 / w0), s2 = Math.min(3, 3200 / w0);
+  const passes = s2 / s1 > 1.3 ? [s1, s2] : [s1];
+  let pass = 0;
+  tessLog = m => {
+    if (m.status === 'recognizing text') setStatus(`🔎 Leyendo la foto (pasada ${pass + 1} de ${passes.length})…`, 15 + 85 * (pass + m.progress) / passes.length);
+    else if (/load|initializ/i.test(m.status) && pass === 0) setStatus('⬇️ Preparando el lector de texto (la primera vez descarga unos MB)…', 5 + 10 * (m.progress || 0));
+  };
+  const worker = await getTessWorker();
+  const reads = [];
+  for (pass = 0; pass < passes.length; pass++){
+    const canvas = toCanvas(img, passes[pass]);
+    const { data } = await worker.recognize(canvas);
+    const f = 1600 / canvas.width;   // coordenadas normalizadas a 1600 px de ancho
+    reads.push(IMPORT.parsePhoto((data.words || []).map(wd => ({ text: wd.text, x0: wd.bbox.x0 * f, y0: wd.bbox.y0 * f, x1: wd.bbox.x1 * f, y1: wd.bbox.y1 * f }))));
+  }
+  tessLog = () => {};
+  const okReads = reads.filter(r => r.ok);
+  if (!okReads.length) throw new Error('No encontré precios en la foto. Usa una captura nítida donde se vean "Monthly premium", "Deductible", etc.');
+  const m = IMPORT.mergePlans(okReads[0].plan, okReads[1] && okReads[1].plan);
+  showPreview(m, 'Foto · ' + file.name, m.conflicts || {});
+}
+
+let pending = null;
+const IMPORTABLE = ROWS.filter(r => !r.calc);
+function showPreview(plan, source, conflicts){
+  pending = { name: plan.name || '', carrier: plan.carrier || '', values: { ...plan.values } };
+  const v = pending.values, found = IMPORTABLE.filter(r => r.key === 'premium' || (v[r.key] != null && v[r.key] !== ''));
+  const noPremium = !String(v.premium ?? '').trim();
+  const nFound = found.filter(r => String(v[r.key] ?? '').trim()).length;
+  const lowOop = (() => { const o = parseCost(v.oop); return o && o.kind === 'usd' && o.n > 0 && o.n < 3000; })();
+  let h = `<div class="preview"><h3>Revisa lo que leí <span class="muted">· ${esc(source)}</span></h3><div class="fields">
+    <label class="field">Nombre del plan<input data-pv="name" value="${esc(pending.name)}" placeholder="Escribe el nombre"></label>
+    <label class="field">Aseguradora<input data-pv="carrier" value="${esc(pending.carrier)}"></label>`;
+  found.forEach(r => {
+    const conf = conflicts[r.key], warn = conf ? `⚠ La otra lectura dio ${esc(conf)}` : r.key === 'oop' && lowOop ? '⚠ Parece bajo: revisa este número'
+      : r.key === 'premium' && noPremium ? '⚠ Escríbelo: este documento no trae el pago mensual' : '';
+    if (r.type === 'textarea') h += `<label class="field wide">${esc(r.label)}<textarea data-pv="${r.key}">${esc(v[r.key])}</textarea></label>`;
+    else h += `<label class="field${warn ? ' conf' : ''}">${esc(r.label)}<input data-pv="${r.key}" value="${esc(v[r.key] ?? '')}"${r.key === 'premium' ? ' placeholder="$0.00"' : ''}>${warn ? `<span class="wmsg">${warn}</span>` : ''}</label>`;
+  });
+  const lname = pending.name.toLowerCase();
+  const guess = state.plans.findIndex(p => p.name && lname && (p.name.toLowerCase() === lname));
+  const emptyOnly = state.plans.length === 1 && isBlank(state.plans[0]);
+  h += `</div><p class="muted" style="margin:8px 0 0">${nFound} datos encontrados. Los campos que no aparecen aquí quedan vacíos (o sin cambios si completas un plan existente).</p>
+    <div class="pv-actions"><button class="btn primary" id="pvAdd">➕ ${emptyOnly ? 'Guardar plan' : 'Agregar como plan nuevo'}</button>
+    ${state.plans.length && !emptyOnly ? `<span class="muted">o</span><select id="pvTarget" aria-label="Plan a completar">${state.plans.map((p, i) => `<option value="${i}"${i === guess ? ' selected' : ''}>${i + 1}. ${esc(p.name || 'Plan ' + (i + 1))}</option>`).join('')}</select><button class="btn" id="pvMerge">↪ Completar ese plan</button>` : ''}
+    <button class="btn" id="pvCancel">Cancelar</button></div></div>`;
+  impPreview.innerHTML = h; impPreview.hidden = false;
+  setStatus(`✅ Listo: encontré ${nFound} datos. Revísalos abajo.`, null, 'ok');
+  impPreview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function isBlank(p){ return !p.name && !p.carrier && !Object.values(p.values).some(x => String(x ?? '').trim()); }
+impPreview.addEventListener('input', e => {
+  const k = e.target.dataset.pv; if (!k || !pending) return;
+  if (k === 'name' || k === 'carrier') pending[k] = e.target.value; else pending.values[k] = e.target.value;
+});
+impPreview.addEventListener('click', e => {
+  const id = e.target.id; if (!pending || !id) return;
+  let idx;
+  if (id === 'pvAdd'){
+    const plan = { ...newPlan(), name: pending.name, carrier: pending.carrier, values: { ...pending.values } };
+    if (state.plans.length === 1 && isBlank(state.plans[0])) state.plans[0] = plan; else state.plans.push(plan);
+    idx = state.plans.indexOf(plan);
+  } else if (id === 'pvMerge'){
+    idx = +document.getElementById('pvTarget').value;
+    const t = state.plans[idx];
+    Object.entries(pending.values).forEach(([k, val]) => {
+      if (val == null || String(val).trim() === '') return;
+      t.values[k] = k === 'notes' && t.values.notes && !t.values.notes.includes(val) ? t.values.notes + ' ' + val : val;
+    });
+    if (!t.name) t.name = pending.name;
+    if (!t.carrier) t.carrier = pending.carrier;
+  } else if (id !== 'pvCancel') return;
+  pending = null; impPreview.hidden = true; impPreview.innerHTML = '';
+  if (idx == null){ impStatus.hidden = true; return; }
+  save(); render();
+  setStatus(`✅ Guardado en el plan ${idx + 1}. Puedes seguir corrigiendo en la tabla.`, null, 'ok');
+  const th = grid.querySelectorAll('th.planhead')[idx];
+  if (th){ const wrap = document.querySelector('.wrap'); wrap.scrollTo({ left: Math.max(0, th.offsetLeft - wrap.clientWidth / 3), behavior: 'smooth' }); }
+});
+
+let startTab = 'load';
+try { startTab = localStorage.getItem('ic-tab') === 'analysis' ? 'analysis' : 'load'; } catch(e){}
+
 render();
+showTab(startTab);
 </script>
 </body>
 </html>
