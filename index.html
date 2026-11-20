@@ -12,7 +12,7 @@
   --text:#1b2430; --muted:#5d6b7e; --accent:#0b6bcb; --accent-ink:#ffffff;
   --best-bg:#e3f6ea; --best-ink:#136c36; --worst-bg:#fdecec; --worst-ink:#a32020;
   --section:#dfe7f2; --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 16px rgba(16,24,40,.06);
-  --label-w:230px; --col-w:240px;
+  --label-w:210px; --col-w:220px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -30,7 +30,8 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html{font-size:90%}
+body{background:var(--bg);color:var(--text);font:13.5px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 header.top{max-width:1400px;margin:0 auto;padding:20px 16px 8px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
 h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
 .sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
@@ -101,7 +102,7 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
     --label-w:clamp(92px,28vw,130px);
     --col-w:max(108px,calc((100vw - 18px - var(--label-w)) / 2));
   }
-  body{font-size:13px}
+  body{font-size:12px}
   header.top{padding:12px 9px 6px;gap:8px}
   h1{font-size:1.1rem}
   .sub{font-size:.78rem}
@@ -203,6 +204,10 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
 .tl td.best{background:var(--best-bg);color:var(--best-ink);font-weight:600}
 .tl tr.birth td{font-weight:700}
 .tl tr.total td{font-weight:700;border-top:2px solid var(--border)}
+.tl input.cnt{width:3.4em;text-align:right;font:inherit;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 4px;-moz-appearance:textfield}
+.tl input.cnt::-webkit-inner-spin-button,.tl input.cnt::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.tl input.cnt:focus{outline:none;border-color:var(--accent)}
+.tl input.cnt.edited{border-color:#c99700;background:color-mix(in srgb,#d9a400 18%,var(--surface));font-weight:700}
 .bar{display:inline-block;height:8px;background:var(--accent);border-radius:4px;vertical-align:middle;opacity:.75}
 .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .box{border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:.86rem}
@@ -638,7 +643,7 @@ function defaultProfile(){
   return {
     status: 'normal',
     normal: { pcp:4, specialist:2, urgent:0, blood:1, xray:0, generic:0 },
-    preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', switchMode:'any', current:'' },
+    preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', switchMode:'any', current:'', overrides:{} },
     prices: { pcp:150, specialist:250, urgent:200, blood:150, xray:150, generic:15, ob:200, us:300,
               facV:8000, proV:2500, facC:13000, proC:3500 },
   };
@@ -730,6 +735,7 @@ function normalCost(plan){
 
 /* ---- modo embarazo ---- */
 const DAY = 864e5;
+const OV_TYPES = { consults: ['ob', 'mfm', 'post'], us: ['us'], lab: ['lab'] };
 function pregTimeline(){
   const P = state.profile.preg;
   if (!P.due) return null;
@@ -762,6 +768,18 @@ function pregTimeline(){
       w1: Math.max(0, Math.floor((Math.max(+d, +today) - lmp) / (7*DAY))), w2: Math.floor((end - lmp) / (7*DAY)) };
   });
   future.forEach(e => months[idx(e.date)].events.push(e));
+  // cambios hechos a mano en la tabla (por mes): reemplazan el calendario estándar
+  const ov = P.overrides || {};
+  months.forEach(M => {
+    const o = ov[`${M.y}-${M.m + 1}`];
+    if (!o) return;
+    Object.entries(OV_TYPES).forEach(([t, types]) => {
+      const n = o[t];
+      if (n == null || !isFinite(n)) return;
+      M.events = M.events.filter(e => !types.includes(e.type));
+      for (let k = 0; k < Math.min(60, Math.max(0, Math.round(n))); k++) M.events.push({ type: t === 'consults' ? 'ob' : t, date: M.date });
+    });
+  });
   return { due, lmp, week, months, birthIdx: idx(due), today };
 }
 function eventCost(plan, e, nums, acc, info){
@@ -860,6 +878,20 @@ function onProfileInput(e){
 }
 pform.addEventListener('input', onProfileInput);
 pform.addEventListener('change', onProfileInput);
+const presultsEl = document.getElementById('presults');
+presultsEl.addEventListener('change', e => {
+  const t = e.target;
+  if (!t.dataset.mk) return;
+  const pg = state.profile.preg, ov = pg.overrides || (pg.overrides = {});
+  const o = ov[t.dataset.mk] || (ov[t.dataset.mk] = {});
+  o[t.dataset.t] = t.value === '' ? null : Math.max(0, Math.min(60, Math.round(+t.value) || 0));
+  if (Object.values(o).every(v => v == null)) delete ov[t.dataset.mk];
+  save(); renderResults();
+});
+presultsEl.addEventListener('click', e => {
+  if (e.target.id !== 'ovReset') return;
+  state.profile.preg.overrides = {}; save(); renderResults();
+});
 pform.addEventListener('click', e => {
   const b = e.target.closest('button[data-status]'); if (!b) return;
   state.profile.status = b.dataset.status; save(); render();
@@ -974,22 +1006,25 @@ function pregHTML(){
       : stratHTML(real, '✅ Mejor estrategia <span class="muted">(cambios solo el 1 de enero y después del parto)</span>') + stratHTML(alt, '🧪 Si pudieras cambiar en cualquier mes')}</div>`;
   }
   // tabla mes a mes
-  h += `<div class="tl" style="margin-top:12px"><table><thead><tr><th>Mes</th><th>Semanas</th><th>Consultas</th><th>Eco</th><th>Análisis</th><th style="text-align:left">Carga</th>`;
+  h += `<div class="tl" style="margin-top:12px"><table><thead><tr><th>Mes</th><th>Semanas</th><th>Consultas ✎</th><th>Eco ✎</th><th>Análisis ✎</th><th style="text-align:left">Carga</th>`;
   state.plans.forEach((_, i) => { const nm = state.plans[i].name || 'Plan ' + (i+1); h += `<th title="${esc(nm)}">${i+1}. ${esc(nm.length > 14 ? nm.slice(0, 13) + '…' : nm)}</th>`; });
   h += `</tr></thead><tbody>`;
   months.forEach((m, i) => {
     const cnt = t => m.events.filter(e => t.includes(e.type)).length;
     const consults = cnt(['ob','mfm','post']), load = m.events.filter(e => e.type !== 'birth').length;
     const isBirth = i === birthIdx;
+    const mk = `${m.y}-${m.m + 1}`, o = (P.overrides || {})[mk] || {};
+    const inp = (t, v, lbl) => `<td><input class="cnt${o[t] != null ? ' edited' : ''}" type="number" min="0" max="60" step="1" inputmode="numeric" data-mk="${mk}" data-t="${t}" value="${v}" aria-label="${lbl} en ${monthName(m.date)}"></td>`;
     const vals = singles.map(s => s.per[i]), mn = Math.min(...vals), allEq = vals.every(v => Math.abs(v - vals[0]) < 0.5);
     h += `<tr class="${isBirth ? 'birth' : ''}"><td>${monthName(m.date)}${isBirth ? ' 👶 Parto' : ''}${m.m === 0 && i > 0 ? ' 🔄' : ''}</td>
-      <td>${m.w1 > 42 ? 'postparto' : `${m.w1}–${Math.min(m.w2, 46)}`}</td><td>${consults || ''}</td><td>${cnt(['us']) || ''}</td><td>${cnt(['lab']) || ''}</td>
+      <td>${m.w1 > 42 ? 'postparto' : `${m.w1}–${Math.min(m.w2, 46)}`}</td>${inp('consults', consults, 'Consultas')}${inp('us', cnt(['us']), 'Ecografías')}${inp('lab', cnt(['lab']), 'Análisis')}
       <td style="text-align:left"><span class="bar" style="width:${Math.round(load / maxLoad * 60)}px"></span></td>`;
     vals.forEach((v, k) => h += `<td class="${n > 1 && !allEq && Math.abs(v - mn) < 0.5 ? 'best' : ''}">${money0(v)}${n > 1 && pick.get(i) === k ? ' ✓' : ''}</td>`);
     h += `</tr>`;
   });
   h += `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td></td>${totals.map((t, k) => `<td class="${n > 1 && k === bestSingle ? 'best' : ''}">${money0(t)}</td>`).join('')}</tr></tbody></table></div>`;
-  h += `<p class="muted" style="margin:6px 0 0">Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
+  const nEdits = Object.keys(P.overrides || {}).length;
+  h += `<p class="muted" style="margin:6px 0 0">✎ Puedes cambiar las consultas, ecos y análisis de cada mes${nEdits ? ` (en amarillo los que cambiaste) <button class="btn" id="ovReset" style="padding:2px 8px;font-size:.78rem">↺ Volver al calendario estándar</button>` : ''}.<br>Verde = plan más barato ese mes · ✓ = plan de la mejor estrategia · 🔄 = 1 de enero: el deducible y el máximo de bolsillo vuelven a cero.</p>`;
 
   // advertencias
   const birthYear = g.due.getFullYear(), crosses = months.slice(0, birthIdx + 1).some(m => m.y !== today.getFullYear());
