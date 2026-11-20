@@ -684,27 +684,33 @@ function planNums(plan){
   return {
     premium: p && p.kind !== 'pct' && isFinite(p.n) ? p.n : 0,
     ded:     d && d.kind !== 'pct' && isFinite(d.n) ? d.n : 0,
+    drugDed: (dd => dd && dd.kind !== 'pct' && isFinite(dd.n) ? dd.n : 0)(parseCost(plan.values.drugDed)),
     oop:     o && o.kind !== 'pct' && isFinite(o.n) ? o.n : Infinity,
     coins:   coinsKnown ? (c.kind === 'pct' ? c.n/100 : 0) : DEFAULT_COINS,
     coinsKnown,
   };
 }
-// Lo que pagas por UN servicio. acc = lo pagado este año en este plan {ded, oop}.
+// Lo que pagas por UN servicio. acc = lo pagado este año en este plan {ded, dded, oop}.
 function charge(raw, price, nums, acc, info){
   const v = parseCost(raw), s = String(raw ?? '').toLowerCase();
+  const drug = /drug|prescription|medicina/.test(s);
+  const afterDed = /deduct|after|despu/.test(s) && !/not subject|no sujeto/.test(s);
+  const dk = drug ? 'dded' : 'ded', dedAmt = drug ? nums.drugDed : nums.ded;
+  const toDeductible = () => { const t = Math.max(0, Math.min(price, dedAmt - (acc[dk] || 0))); acc[dk] = (acc[dk] || 0) + t; return t; };
   let pay;
   if (!v && info) info.missing = true;
-  if (!v || v.n === Infinity || (v.kind === 'pct' && /deduct|after|despu/.test(s) && !/drug|medic/.test(s))){
+  if (!v || v.n === Infinity){
     // precio completo hasta cubrir el deducible, luego coaseguro
-    const coins = v && v.kind === 'pct' ? v.n/100 : nums.coins;
-    if (!(v && v.kind === 'pct') && !nums.coinsKnown && info) info.coinsAssumed = true;
-    const toDed = Math.max(0, Math.min(price, nums.ded - acc.ded));
-    acc.ded += toDed;
-    pay = toDed + (price - toDed) * coins;
-  } else if (v.kind === 'pct') {
-    pay = price * v.n / 100;
+    if (!nums.coinsKnown && info) info.coinsAssumed = true;
+    const t = toDeductible();
+    pay = t + (price - t) * nums.coins;
+  } else if (v.kind === 'pct'){
+    const t = afterDed ? toDeductible() : 0;
+    pay = t + (price - t) * v.n / 100;
   } else {
-    pay = Math.min(v.n * (v.perDay && info && info.days ? Math.min(info.days, 2) : 1), price);
+    const copay = Math.min(v.n * (v.perDay && info && info.days ? Math.min(info.days, 2) : 1), price);
+    if (afterDed){ const t = toDeductible(); pay = t + (price > t ? Math.min(copay, price - t) : 0); }
+    else pay = copay;
   }
   pay = Math.max(0, Math.min(pay, nums.oop - acc.oop));
   acc.oop += pay;
@@ -746,6 +752,7 @@ function pregTimeline(){
   Object.entries(sched).forEach(([type, weeks]) => weeks.forEach(w => events.push({ type, w, date: at(w) })));
   events.push({ type:'birth', w:40, date: due });
   const future = events.filter(e => e.date >= today).sort((a,b) => a.date - b.date);
+  if (!future.length) return { error: 'La fecha de parto ya pasó.' };
   const y0 = today.getFullYear(), m0 = today.getMonth();
   const idx = d => (d.getFullYear() - y0) * 12 + d.getMonth() - m0;
   const last = future[future.length - 1].date;
@@ -791,27 +798,27 @@ function stint(plan, months, s, e){
   }
   return { total, per, info };
 }
-// start/lockK: los meses antes de "start" quedan fijos en el plan lockK (el que ya tienes)
+// lockK >= 0: el primer tramo (desde el mes 0) es el plan que ya tienes y dura al menos hasta "start".
 function bestStrategy(months, points, start = 0, lockK = -1){
-  const pts = [...new Set(points)].filter(i => i >= start && i < months.length).sort((a,b) => a - b);
-  if (pts[0] !== start) pts.unshift(start);
-  pts.push(months.length);
+  const M = months.length;
+  const pts = [...new Set(points)].filter(i => i > 0 && i < M && (lockK < 0 || i >= start)).sort((a,b) => a - b);
+  pts.unshift(0); pts.push(M);
   const best = pts.map(() => Infinity), prev = [];
   best[0] = 0;
   for (let j = 1; j < pts.length; j++) for (let i = 0; i < j; i++){
     if (!isFinite(best[i])) continue;
     state.plans.forEach((p, k) => {
+      if (i === 0 && lockK >= 0 && k !== lockK) return;
       const c = best[i] + stint(p, months, pts[i], pts[j]).total;
       if (c < best[j] - 0.005){ best[j] = c; prev[j] = { i, k }; }
     });
   }
   const segs = [];
   for (let j = pts.length - 1; j > 0; j = prev[j].i) segs.unshift({ s: pts[prev[j].i], e: pts[j], k: prev[j].k });
-  let total = best[pts.length - 1];
-  if (start > 0 && lockK >= 0){ segs.unshift({ s: 0, e: start, k: lockK, locked: true }); total += stint(state.plans[lockK], months, 0, start).total; }
+  if (lockK >= 0 && segs.length) segs[0].locked = true;
   const merged = [];
-  segs.forEach(g => { const l = merged[merged.length - 1]; if (l && l.k === g.k && !l.locked && !g.locked) l.e = g.e; else merged.push({ ...g }); });
-  return { total, segs: merged };
+  segs.forEach(g => { const l = merged[merged.length - 1]; if (l && l.k === g.k) l.e = g.e; else merged.push({ ...g }); });
+  return { total: best[pts.length - 1], segs: merged };
 }
 
 /* ---- formulario ---- */
@@ -875,13 +882,18 @@ const POINTS = {
     <li><b>Ultrasonidos y análisis</b>: suelen cobrarse aparte como "Diagnostic test".</li>
     <li><b>Ejemplo "Peg is Having a Baby"</b> (última página del Summary of Benefits): es el costo oficial de un embarazo con parto en ese plan.</li>
     <li><b>Red</b>: que tu obstetra y el hospital donde quieres dar a luz estén en la red.</li>
-    <li><b>El bebé</b>: tendrá su propio deducible y máximo; revisa "Well baby care" y el pediatra.</li></ol></div>`,
+    <li><b>El bebé</b>: tendrá su propio deducible y máximo; revisa "Well baby care" y el pediatra.</li>
+    <li><b>Medicaid</b>: si los ingresos del hogar son bajos, una embarazada puede calificar para Medicaid en Florida (pregunta en ACCESS Florida o a tu agente).</li></ol></div>`,
 };
 function dataWarnings(infos){
   const miss = [], assumed = [];
   infos.forEach((inf, i) => { if (inf.missing) miss.push(planName(i)); if (inf.coinsAssumed) assumed.push(planName(i)); });
   let w = '';
   const noPrem = state.plans.map((p, i) => { const c = parseCost(p.values.premium); return c && c.kind !== 'pct' && isFinite(c.n) ? null : planName(i); }).filter(Boolean);
+  const noField = (key) => state.plans.map((p, i) => { const c = parseCost(p.values[key]); return c && c.kind !== 'pct' && isFinite(c.n) ? null : planName(i); }).filter(Boolean);
+  const noDed = noField('deductible'), noOop = noField('oop');
+  if (noDed.length) w += `<li>Falta el <b>deducible</b> en <b>${noDed.map(esc).join(', ')}</b>: se calculó como $0 (puede salir más barato de lo real).</li>`;
+  if (noOop.length) w += `<li>Falta el <b>máximo de bolsillo</b> en <b>${noOop.map(esc).join(', ')}</b>: se calculó sin límite.</li>`;
   if (noPrem.length) w += `<li><b>Falta el pago mensual</b> en <b>${noPrem.map(esc).join(', ')}</b>: se calculó como $0 y puede parecer más barato de lo que es.</li>`;
   if (miss.length) w += `<li>Faltan datos en <b>${miss.map(esc).join(', ')}</b>: lo que está vacío se calculó como precio completo.</li>`;
   if (assumed.length) w += `<li>Coaseguro vacío en <b>${assumed.map(esc).join(', ')}</b>: se asumió ${DEFAULT_COINS*100}%.</li>`;
@@ -933,12 +945,13 @@ function pregHTML(){
   const bestSingle = totals.indexOf(Math.min(...totals));
   const anyMode = P.switchMode !== 'rules';
   const realPts = [0, ...months.map((m, i) => m.m === 0 ? i : -1), birthIdx + 1];
-  const firstJan = months.findIndex((m, i) => i > 0 && m.m === 0);
   const cur = P.current === '' || P.current == null ? -1 : +P.current;
   const hasCur = cur >= 0 && cur < n;
-  // con reglas: el plan actual sigue hasta el 1 de enero; cambiando cuando quieras: el cambio empieza el mes siguiente
-  const rules = bestStrategy(months, realPts, hasCur && firstJan > 0 ? firstJan : 0, hasCur && firstJan > 0 ? cur : -1);
-  const free = bestStrategy(months, months.map((_, i) => i), hasCur && M > 1 ? 1 : 0, hasCur && M > 1 ? cur : -1);
+  // con reglas: el plan actual sigue hasta el primer momento permitido (1 de enero o después del parto);
+  // cambiando cuando quieras: el cambio empieza el mes siguiente
+  const firstAllowed = Math.min(M, ...realPts.filter(i => i > 0 && i < M));
+  const rules = bestStrategy(months, realPts, hasCur ? firstAllowed : 0, hasCur ? cur : -1);
+  const free = bestStrategy(months, months.map((_, i) => i), hasCur ? Math.min(1, M) : 0, hasCur ? cur : -1);
   const real = anyMode ? free : rules, alt = anyMode ? rules : free;
   const range = (s, e) => s === e - 1 ? monthName(months[s].date) : `${monthName(months[s].date)} – ${monthName(months[e-1].date)}`;
   const stratHTML = (st, title) => {
@@ -983,7 +996,12 @@ function pregHTML(){
   let w = anyMode
     ? `<li><b>Confirma con tu agente que puedes cambiar de plan cuando quieras.</b> En HealthCare.gov normalmente hace falta un Período Especial de Inscripción: en Florida el embarazo por sí solo no lo da, el nacimiento sí (60 días). Cada cambio suele empezar el día 1 del mes siguiente.</li>`
     : `<li><b>El embarazo no te deja cambiar de plan a mitad de año</b> en Florida (HealthCare.gov). Solo puedes cambiar en la inscripción abierta (para empezar el 1 de enero) o en los 60 días después del nacimiento, cuando también agregas al bebé.</li>`;
-  if (birthYear > today.getFullYear()) w += `<li>El parto cae en <b>${birthYear}</b>: el plan que elijas en esta inscripción abierta es el que paga el parto. Para que empiece el 1 de enero, inscríbete antes del <b>15 de diciembre</b>.</li>`;
+  if (birthYear > today.getFullYear()){
+    const y = today.getFullYear(), nov1 = new Date(y, 10, 1), dec15 = new Date(y, 11, 15, 23, 59);
+    if (today >= nov1 && today <= dec15) w += `<li>El parto cae en <b>${birthYear}</b>: el plan que elijas en esta inscripción abierta es el que paga el parto. Para que empiece el 1 de enero, inscríbete antes del <b>15 de diciembre</b>.</li>`;
+    else if (today > dec15) w += `<li>El parto cae en <b>${birthYear}</b> y ya pasó el 15 de diciembre: pregunta a tu agente desde qué fecha empezaría un plan nuevo.</li>`;
+    else w += `<li>El parto cae en <b>${birthYear}</b>: el plan que tengas ese año pagará el parto. La inscripción abierta empieza el 1 de noviembre.</li>`;
+  }
   if (crosses) w += `<li>El embarazo cruza el 1 de enero: el deducible y el máximo de bolsillo vuelven a empezar en ${today.getFullYear() + 1}.</li>`;
   w += `<li>Cambiar de plan también reinicia el deducible y el máximo de bolsillo.</li>`;
   w += `<li>Los precios de hospital y médico son estimados; ajústalos en "Precios estimados". Pregunta al seguro cuánto cuesta el parto en tu hospital.</li>`;
@@ -1300,7 +1318,7 @@ async function importPdf(file){
   setStatus('📄 Abriendo el PDF…', 3);
   await loadScript(LIBS.pdf);
   pdfjsLib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
-  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false }).promise;
   const pages = [];
   for (let p = 1; p <= doc.numPages; p++){
     const tc = await (await doc.getPage(p)).getTextContent();
@@ -1411,6 +1429,7 @@ impPreview.addEventListener('click', e => {
   } else if (id === 'pvMerge'){
     idx = +document.getElementById('pvTarget').value;
     const t = state.plans[idx];
+    if (!t){ setStatus('⚠ Ese plan ya no existe. Elige otro o agrégalo como plan nuevo.', null, 'err'); showPreview({ name: pending.name, carrier: pending.carrier, values: pending.values }, 'revisión', {}); return; }
     Object.entries(pending.values).forEach(([k, val]) => {
       if (val == null || String(val).trim() === '') return;
       t.values[k] = k === 'notes' && t.values.notes && !t.values.notes.includes(val) ? t.values.notes + ' ' + val : val;

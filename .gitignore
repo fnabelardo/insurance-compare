@@ -1,7 +1,13 @@
-*.pdf
-*.jpeg
-*.jpg
-*.png
-*.heic
+# Documentos y datos personales: NUNCA subirlos (el repo es público)
+*.[pP][dD][fF]
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+*.[pP][nN][gG]
+*.[hH][eE][iI][cC]
+*.[hH][eE][iI][fF]
+*.[wW][eE][bB][pP]
+*.[gG][iI][fF]
+*.[tT][iI][fF]
+*.[tT][iI][fF][fF]
+*.[jJ][sS][oO][nN]
 .DS_Store
-mis-planes*.json
