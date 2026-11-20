@@ -32,7 +32,7 @@
 html,body{margin:0}
 html{font-size:90%}
 body{background:var(--bg);color:var(--text);font:13.5px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-header.top{max-width:1400px;margin:0 auto;padding:20px 16px 8px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+header.top{margin:0;padding:16px 10px 8px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
 h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
 .sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -41,12 +41,12 @@ button{font:inherit;cursor:pointer}
 .btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .toggle{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:.9rem;user-select:none}
-.legend{max-width:1400px;margin:0 auto;padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.85rem}
+.legend{margin:0;padding:0 10px 10px;display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.85rem}
 .chip{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
 .chip.best{background:var(--best-bg);border:1px solid var(--best-ink)}
 .chip.worst{background:var(--worst-bg);border:1px solid var(--worst-ink)}
 
-main{max-width:1400px;margin:0 auto;padding:0 16px 40px}
+main{margin:0;padding:0 10px 40px}
 .wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
 table{border-collapse:separate;border-spacing:0;min-width:100%}
 th,td{border-bottom:1px solid var(--border);padding:0;vertical-align:middle}
@@ -94,7 +94,7 @@ th.addhead{width:70px;min-width:70px;vertical-align:middle;text-align:center;pos
 .menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--text);padding:8px 10px;border-radius:6px}
 .menu button:hover{background:var(--surface-2)}
 .menu hr{border:0;border-top:1px solid var(--border);margin:6px 0}
-footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);font-size:.8rem}
+footer{margin:0;padding:0 10px 30px;color:var(--muted);font-size:.8rem}
 
 /* Celular: etiqueta + 2 planes caben exactamente en el ancho de la pantalla */
 @media (max-width:640px){
@@ -130,7 +130,7 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   footer{padding:0 9px 20px;font-size:.7rem}
 }
 /* ---------- Pestañas y carga ---------- */
-.tabs{max-width:1400px;margin:0 auto 14px;padding:0 16px;display:flex;gap:4px;border-bottom:1px solid var(--border)}
+.tabs{margin:0 0 14px;padding:0 10px;display:flex;gap:4px;border-bottom:1px solid var(--border)}
 .tabs button{border:0;background:transparent;color:var(--muted);padding:10px 16px;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px}
 .tabs button:hover{color:var(--text)}
 .tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
@@ -163,6 +163,35 @@ footer{max-width:1400px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   .imp-actions .btn{flex:1 1 auto}
   .ptitle{padding:10px 10px 8px;font-size:.95rem}
   .preview{padding:10px}
+}
+/* ---------- Prioridades ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip-p{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 10px;font-size:.82rem}
+.chip-p b{color:var(--accent);font-weight:400;margin-left:2px;letter-spacing:-1px}
+.chip-p.w1{color:var(--text);border-color:var(--accent)}
+.chip-p.w2{color:var(--text);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface));font-weight:600}
+.chip-p.w3{color:var(--accent-ink);background:var(--accent);border-color:var(--accent);font-weight:700}
+.chip-p.w3 b{color:var(--accent-ink)}
+.pgroup h4{margin:6px 0 4px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets .btn{padding:5px 10px;font-size:.82rem}
+.rank{display:grid;gap:8px}
+.rk{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:var(--surface-2)}
+.rk.best{border-color:var(--best-ink);background:var(--best-bg)}
+.rk .pos{font-weight:700;color:var(--muted);min-width:1.1em}
+.rk-main{flex:1;min-width:0}
+.rk-name{font-weight:600;overflow-wrap:anywhere}
+.rk-bar{height:6px;background:var(--border);border-radius:3px;margin:4px 0}
+.rk-bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.rk.best .rk-bar i{background:var(--best-ink)}
+.rk-sub{font-size:.76rem;color:var(--muted)}
+.rk-score{font-size:1.35rem;font-weight:700;font-variant-numeric:tabular-nums}
+.rk.best .rk-score{color:var(--best-ink)}
+#prio{margin-bottom:14px}
+@media (max-width:640px){
+  .chip-p{font-size:.74rem;padding:3px 8px}
+  .rk{padding:6px 8px;gap:8px}
+  .rk-score{font-size:1.1rem}
 }
 /* ---------- Mi situación ---------- */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px}
@@ -286,6 +315,10 @@ tr.row.focus .lbl{box-shadow:inset 4px 0 0 var(--accent)}
     <p class="foot">Escribe montos como <code>$4,700</code>, <code>70</code>, <code>No charge</code>, <code>Full price</code>, <code>30%</code> o <code>50% after deductible</code>. "Full price" cuenta como el peor valor.</p>
   </section>
   <section class="view" id="view-analysis" role="tabpanel" hidden>
+    <div class="panel" id="prio">
+      <h2 class="ptitle">⭐ Lo que más me importa</h2>
+      <div class="pbody" id="prioBody"></div>
+    </div>
     <div class="panel" id="profile">
       <h2 class="ptitle">🎯 Mi situación: ¿cuál plan me conviene?</h2>
       <div class="pbody">
@@ -470,7 +503,7 @@ function render(){
   SECTIONS.forEach(sec => {
     h += `<tr class="section"><th>${esc(sec.title)}${sec.note?`<span>${esc(sec.note)}</span>`:''}</th>${'<td></td>'.repeat(n)}<td class="addcol"></td></tr>`;
     sec.rows.forEach(r => {
-      h += `<tr class="row${isFocus(r.key)?" focus":""}" data-key="${r.key}"><th class="lbl">${isFocus(r.key)?`<span class="star" title="Importante en tu situación">★</span>`:""}${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
+      h += `<tr class="row${isFocus(r.key)?" focus":""}" data-key="${r.key}"><th class="lbl">${starsFor(r.key)}${esc(r.label)}${r.hint?`<small>${esc(r.hint)}</small>`:''}</th>`;
       state.plans.forEach((p, i) => {
         if (r.calc){ h += `<td class="cell calc" data-plan="${i}"></td>`; return; }
         const v = p.values[r.key] ?? '';
@@ -635,13 +668,19 @@ fileIn.addEventListener('change', async () => {
 });
 
 /* =====================  MI SITUACIÓN  ===================== */
-const FOCUS = {
-  normal:   ['premium','deductible','oop','pcp','specialist','generic','network'],
-  pregnant: ['premium','deductible','oop','coins','prenatal','ultrasound','xray','blood','deliveryPro','delivery','wellBaby','network'],
+// Prioridades: peso 0-3 por pago. Sin elegir, se usa el atajo de la situación (normal/embarazo).
+const PRESETS = {
+  pregnant: { premium:3, deductible:2, oop:3, coins:1, prenatal:2, ultrasound:1, blood:1, deliveryPro:3, delivery:3, wellBaby:1, specialist:1 },
+  normal:   { premium:3, deductible:2, oop:2, pcp:2, specialist:2, generic:1, urgent:1 },
+  cheap:    { premium:3 },
+  safe:     { premium:1, deductible:2, oop:3, er:2, hospFac:2, hospPhys:1, imaging:1 },
 };
+const PRESET_LABELS = [['pregnant','🤰 Embarazo'],['normal','🙂 Uso normal'],['cheap','💵 Solo pago mensual'],['safe','🛡️ Peor caso / emergencias']];
+function currentWeights(){ return state.profile.weights || PRESETS[state.profile.status] || PRESETS.normal; }
 function defaultProfile(){
   return {
     status: 'normal',
+    weights: null,
     normal: { pcp:4, specialist:2, urgent:0, blood:1, xray:0, generic:0 },
     preg:   { due:'', risk:'normal', delivery:'vaginal', billing:'plan', switchMode:'any', current:'', overrides:{} },
     prices: { pcp:150, specialist:250, urgent:200, blood:150, xray:150, generic:15, ob:200, us:300,
@@ -652,9 +691,11 @@ function mergeProfile(p){
   const d = defaultProfile();
   if (!p || typeof p !== 'object') return d;
   return { status: p.status === 'pregnant' ? 'pregnant' : 'normal',
-    normal: { ...d.normal, ...(p.normal||{}) }, preg: { ...d.preg, ...(p.preg||{}) }, prices: { ...d.prices, ...(p.prices||{}) } };
+    normal: { ...d.normal, ...(p.normal||{}) }, preg: { ...d.preg, ...(p.preg||{}) }, prices: { ...d.prices, ...(p.prices||{}) },
+    weights: p.weights && typeof p.weights === 'object' ? { ...p.weights } : null };
 }
-function isFocus(key){ return (FOCUS[state.profile.status] || []).includes(key); }
+function isFocus(key){ return (currentWeights()[key] || 0) > 0; }
+function starsFor(key){ const w = currentWeights()[key] || 0; return w ? `<span class="star" title="Importancia ${w} de 3">${'★'.repeat(w)}</span> ` : ''; }
 
 const PRICE_LABELS = { pcp:'Consulta médico primario', specialist:'Consulta especialista', urgent:'Urgent care', blood:'Análisis de sangre',
   xray:'Rayos X', generic:'Receta genérica', ob:'Consulta prenatal', us:'Ultrasonido',
@@ -935,7 +976,94 @@ function renderResults(){
   const box = document.getElementById('presults');
   if (!box) return;
   box.innerHTML = state.profile.status === 'pregnant' ? pregHTML() : normalHTML();
+  renderPriorities();
 }
+
+/* =====================  PRIORIDADES  ===================== */
+const PRIORITY_KEYS = ROWS.filter(r => !r.calc && r.cmp === 'low').map(r => r.key);
+const DIRECT_KEYS = ['premium', 'deductible', 'drugDed', 'oop'];
+// precio estimado de un servicio, para poder comparar "$350" con "50% después del deducible"
+const ROW_PRICE_DEFAULT = { imaging:1500, er:3000, ambulance:1200, hospFac:15000, hospPhys:2000, outFac:4000, outPhys:1500,
+  rehab:150, mhOut:150, mhHosp:10000, brand:300, nonpref:500, specialty:3000, preventive:250, wellBaby:200 };
+function rowPrice(key){
+  const pr = state.profile.prices;
+  const m = { pcp:pr.pcp, specialist:pr.specialist, urgent:pr.urgent, blood:pr.blood, xray:pr.xray, generic:pr.generic,
+              prenatal:pr.ob, ultrasound:pr.us, delivery:pr.facV, deliveryPro:pr.proV };
+  return +(m[key] ?? ROW_PRICE_DEFAULT[key] ?? 200) || 0;
+}
+// lo que cuesta ese pago en ese plan (en dólares; coaseguro en %); null = sin dato
+function rowCost(plan, key){
+  const raw = key === 'ultrasound' ? rawOf(plan, 'ultrasound', 'xray') : plan.values[key];
+  if (!String(raw ?? '').trim()) return null;
+  const c = parseCost(raw);
+  if (DIRECT_KEYS.includes(key)){
+    if (c && c.kind !== 'pct' && isFinite(c.n)) return c.n;
+    return key === 'drugDed' && /n\/a/i.test(raw) ? 0 : null;
+  }
+  if (key === 'coins') return c ? (c.kind === 'pct' ? c.n : c.n === 0 ? 0 : null) : null;
+  return charge(raw, rowPrice(key), planNums(plan), { ded:0, dded:0, oop:0 }, { days: 3 });
+}
+function priorityScores(){
+  const W = currentWeights(), n = state.plans.length;
+  const num = Array(n).fill(0), den = Array(n).fill(0), wins = state.plans.map(() => []), missing = state.plans.map(() => []);
+  Object.entries(W).filter(([k, w]) => w > 0 && PRIORITY_KEYS.includes(k)).forEach(([k, w]) => {
+    const costs = state.plans.map(p => rowCost(p, k));
+    costs.forEach((c, i) => { if (c == null) missing[i].push(k); });
+    const valid = costs.filter(c => c != null && isFinite(c));
+    if (valid.length < 2) return;
+    const mn = Math.min(...valid), mx = Math.max(...valid);
+    costs.forEach((c, i) => {
+      if (c == null || !isFinite(c)) return;
+      num[i] += w * (mx === mn ? 1 : (mx - c) / (mx - mn)); den[i] += w;
+      if (mx > mn && c === mn) wins[i].push([k, w]);
+    });
+  });
+  return state.plans.map((p, i) => ({ i, score: den[i] ? Math.round(100 * num[i] / den[i]) : null,
+    wins: wins[i].sort((a, b) => b[1] - a[1]).map(x => x[0]), missing: missing[i] }));
+}
+const rowLabel = k => (ROWS.find(r => r.key === k) || {}).label || k;
+function renderPriorities(){
+  const box = document.getElementById('prioBody');
+  if (!box) return;
+  const W = currentWeights(), custom = !!state.profile.weights, n = state.plans.length;
+  let h = '';
+  // ranking
+  if (n < 2) h += `<div class="box">Agrega al menos 2 planes en <b>📥 Cargar planes</b> para ordenarlos según tus prioridades.</div>`;
+  else {
+    const sc = priorityScores().sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+    const top = sc[0].score;
+    h += `<div class="rank">${sc.map((r, pos) => `<div class="rk${r.score != null && r.score === top ? ' best' : ''}">
+      <span class="pos">${pos + 1}</span>
+      <div class="rk-main"><div class="rk-name">${r.score != null && r.score === top ? '🏆 ' : ''}${r.i + 1}. ${esc(state.plans[r.i].name || 'Plan ' + (r.i + 1))}</div>
+        <div class="rk-bar"><i style="width:${r.score ?? 0}%"></i></div>
+        <div class="rk-sub">${r.wins.length ? 'Mejor en: ' + r.wins.slice(0, 4).map(k => esc(rowLabel(k))).join(', ') + (r.wins.length > 4 ? '…' : '') : 'No es el mejor en ninguno de tus pagos importantes'}${r.missing.length ? ` · <span class="wmsg">sin dato: ${r.missing.slice(0, 3).map(k => esc(rowLabel(k))).join(', ')}${r.missing.length > 3 ? '…' : ''}</span>` : ''}</div></div>
+      <span class="rk-score">${r.score ?? '—'}</span></div>`).join('')}</div>
+      <p class="muted" style="margin:6px 0 0">Puntaje de 0 a 100: 100 = el más barato en todo lo que marcaste. Los copagos y "% después del deducible" se comparan en dólares con precios estimados de cada servicio.</p>`;
+  }
+  // atajos
+  h += `<div><p class="muted" style="margin:4px 0 6px">Toca cada pago para darle importancia: <b>☆</b> no cuenta · <b>★</b> poco · <b>★★</b> importante · <b>★★★</b> muy importante.${custom ? '' : ' Ahora se usa el atajo de tu situación.'}</p>
+    <div class="presets">${PRESET_LABELS.map(([k, t]) => `<button class="btn" data-preset="${k}">${t}</button>`).join('')}<button class="btn" data-preset="none">Borrar todo</button></div></div>`;
+  // fichas por sección
+  h += SECTIONS.map(sec => {
+    const keys = sec.rows.map(r => r.key).filter(k => PRIORITY_KEYS.includes(k));
+    if (!keys.length) return '';
+    return `<div class="pgroup"><h4>${esc(sec.title)}</h4><div class="chips">${keys.map(k => { const w = W[k] || 0;
+      return `<button class="chip-p w${w}" data-k="${k}" aria-label="${esc(rowLabel(k))}: importancia ${w} de 3">${esc(rowLabel(k))} <b>${w ? '★'.repeat(w) : '☆'}</b></button>`; }).join('')}</div></div>`;
+  }).join('');
+  box.innerHTML = h;
+}
+document.getElementById('prioBody').addEventListener('click', e => {
+  const chip = e.target.closest('[data-k]'), pre = e.target.closest('[data-preset]');
+  if (chip){
+    const W = { ...currentWeights() }, k = chip.dataset.k;
+    W[k] = ((W[k] || 0) + 1) % 4;
+    if (!W[k]) delete W[k];
+    state.profile.weights = W;
+  } else if (pre){
+    state.profile.weights = pre.dataset.preset === 'none' ? {} : { ...PRESETS[pre.dataset.preset] };
+  } else return;
+  save(); render();
+});
 function kpiHTML(totals, sub){
   const min = Math.min(...totals);
   return `<div class="kpis">${totals.map((t, i) => `<div class="kpi${state.plans.length > 1 && t === min ? ' best' : ''}">
